@@ -1,16 +1,27 @@
 package com.epam.esm.configuration;
 
+import com.epam.esm.entity.GiftCertificate;
+import com.epam.esm.service.GiftCertificateService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/certificates")
 public class GiftCertificateController {
-    @GetMapping("/numbers")
-    public ResponseEntity<String> getNumbers() {
+
+    private final GiftCertificateService certificateService;
+
+    @Autowired
+    public GiftCertificateController(GiftCertificateService certificateService) {
+        this.certificateService = certificateService;
+    }
+
+    @PostMapping("/new")
+
+    public ResponseEntity<String> getNumbers(@RequestBody GiftCertificate certificate) {
+        certificateService.insert(certificate);
         return ResponseEntity.status(HttpStatus.CREATED).body("Certificate created successfully");
     }
 }
