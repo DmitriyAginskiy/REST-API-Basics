@@ -6,7 +6,7 @@ public class GiftCertificateQuery {
             + " price, duration, create_date, last_update_date) VALUES (?, ?, ?, ?, ?, ?);";
 
     public static final String CERTIFICATE_UPDATE_TAGS = "INSERT INTO gift_certificates_has_tags (gift_certificates_id,"
-            + " tags_id) VALUES (?, ?)";
+            + " tags_id) VALUES (?, ?);";
 
     private GiftCertificateQuery() {
 
