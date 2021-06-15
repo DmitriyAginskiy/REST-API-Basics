@@ -1,17 +1,20 @@
 package com.epam.esm.dao;
 
 import com.epam.esm.entity.GiftCertificate;
+import com.epam.esm.entity.Tag;
 
 import java.util.List;
 import java.util.Optional;
 
 public interface GiftCertificateDao {
 
-    void insert(GiftCertificate certificate);
+    boolean insert(GiftCertificate certificate);
 
-    void delete(long id);
+    boolean delete(long id);
 
     Optional<GiftCertificate> findById(long id);
 
     List<GiftCertificate> findAll();
+
+    boolean updateCertificateTags(long id, List<Tag> tags);
 }
