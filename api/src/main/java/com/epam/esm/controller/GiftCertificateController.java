@@ -1,5 +1,7 @@
 package com.epam.esm.controller;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -11,11 +13,7 @@ import java.util.List;
 @RequestMapping("/certificates")
 public class GiftCertificateController {
     @GetMapping("/numbers")
-    public List<Integer> getNumbers() {
-        List<Integer> numbers = new ArrayList<>();
-        for(int i = 0; i < 100; i++) {
-            numbers.add(i);
-        }
-        return numbers;
+    public ResponseEntity<String> getNumbers() {
+        return ResponseEntity.status(HttpStatus.CREATED).body("Certificate created successfully");
     }
 }
