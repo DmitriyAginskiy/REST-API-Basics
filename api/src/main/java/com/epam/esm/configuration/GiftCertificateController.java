@@ -7,6 +7,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/certificates")
 public class GiftCertificateController {
@@ -19,8 +21,43 @@ public class GiftCertificateController {
     }
 
     @PostMapping("/new")
-    public ResponseEntity<String> getNumbers(@RequestBody GiftCertificate certificate) {
-        certificateService.insert(certificate);
-        return ResponseEntity.status(HttpStatus.CREATED).body("Certificate created successfully");
+    public ResponseEntity<String> createGiftCertificate(@RequestBody GiftCertificate certificate) {
+        boolean isCreated = certificateService.insert(certificate);
+        if(isCreated) {
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).body("Certificate created successfully");
+        } else {
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).body("Certificate is not created!");
+        }
+    }
+
+    @GetMapping("/all")
+    public List<GiftCertificate> findAllGiftCertificate() {
+        return certificateService.findAll();
+    }
+
+    @GetMapping("/{id}")
+    public GiftCertificate findGiftCertificateById(@PathVariable long id) {
+        System.out.println(certificateService.findById(id).get());
+        return certificateService.findById(id).get();
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<String> deleteGiftCertificate(@PathVariable long id) {
+        boolean isDeleted = certificateService.delete(id);
+        if(isDeleted) {
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).body("Certificate deleted successfully");
+        } else {
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).body("Certificate is not deleted!");
+        }
+    }
+
+    @PatchMapping("/{id}")
+    public ResponseEntity<String> updateGiftCertificate(@PathVariable long id, @RequestBody GiftCertificate certificate) {
+        boolean isUpdated = certificateService.update(id, certificate);
+        if(isUpdated) {
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).body("Certificate updated successfully");
+        } else {
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).body("Certificate is not updated!");
+        }
     }
 }

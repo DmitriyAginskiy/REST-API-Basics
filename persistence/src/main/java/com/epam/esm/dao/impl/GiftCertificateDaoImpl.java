@@ -2,6 +2,7 @@ package com.epam.esm.dao.impl;
 
 import com.epam.esm.dao.GiftCertificateDao;
 import com.epam.esm.dao.constant.GiftCertificateQuery;
+import com.epam.esm.dao.mapper.GiftCertificateMapper;
 import com.epam.esm.entity.GiftCertificate;
 import com.epam.esm.entity.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,10 +22,12 @@ import java.util.Optional;
 public class GiftCertificateDaoImpl implements GiftCertificateDao {
 
     private final JdbcTemplate jdbcTemplate;
+    private final GiftCertificateMapper mapper;
 
     @Autowired
-    public GiftCertificateDaoImpl(DataSource dataSource) {
+    public GiftCertificateDaoImpl(DataSource dataSource, GiftCertificateMapper mapper) {
         this.jdbcTemplate = new JdbcTemplate(dataSource);
+        this.mapper = mapper;
     }
 
     @Override
@@ -51,17 +54,29 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
 
     @Override
     public boolean delete(long id) {
-        return false;
+        return jdbcTemplate.update(GiftCertificateQuery.DELETE_CERTIFICATE_QUERY, id) == 1;
+    }
+
+    @Override
+    public boolean removeTagsFromCertificate(long id) {
+        return jdbcTemplate.update(GiftCertificateQuery.REMOVE_TAGS_FROM_CERTIFICATE, id) > 0;
+    }
+
+    @Override
+    public boolean update(long id, GiftCertificate certificate) {
+        return jdbcTemplate.update(GiftCertificateQuery.UPDATE_CERTIFICATE_QUERY, certificate.getName(),
+                certificate.getDescription(), certificate.getPrice(), certificate.getDuration(), certificate.getLastUpdateDate(),
+                id) == 1;
     }
 
     @Override
     public Optional<GiftCertificate> findById(long id) {
-        return Optional.empty();
+        return jdbcTemplate.query(GiftCertificateQuery.FIND_BY_ID_QUERY, mapper, id).stream().findFirst();
     }
 
     @Override
     public List<GiftCertificate> findAll() {
-        return null;
+        return jdbcTemplate.query(GiftCertificateQuery.FIND_ALL_QUERY, mapper);
     }
 
     @Override

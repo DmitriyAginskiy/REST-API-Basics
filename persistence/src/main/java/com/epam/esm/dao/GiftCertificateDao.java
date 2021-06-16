@@ -12,6 +12,10 @@ public interface GiftCertificateDao {
 
     boolean delete(long id);
 
+    boolean removeTagsFromCertificate(long id);
+
+    boolean update(long id, GiftCertificate certificate);
+
     Optional<GiftCertificate> findById(long id);
 
     List<GiftCertificate> findAll();

@@ -14,6 +14,22 @@ public class GiftCertificate {
     private LocalDateTime lastUpdateDate;
     private List<Tag> tags;
 
+    public GiftCertificate() {
+
+    }
+
+    public GiftCertificate(long id, String name, String description, BigDecimal price, int duration, LocalDateTime createDate,
+                           LocalDateTime lastUpdateDate, List<Tag> tags) {
+        this.id = id;
+        this.name = name;
+        this.description = description;
+        this.price = price;
+        this.duration = duration;
+        this.createDate = createDate;
+        this.lastUpdateDate = lastUpdateDate;
+        this.tags = tags;
+    }
+
     public long getId() {
         return id;
     }
