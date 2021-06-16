@@ -11,6 +11,10 @@ public class TagQuery {
 
     public static final String INSERT_TAG = "INSERT INTO tags (tag_name) VALUES(?);";
 
+    public static final String FIND_BY_ID_QUERY = "SELECT * FROM tags WHERE tag_id = ?;";
+
+    public static final String DELETE_TAG_QUERY = "DELETE FROM tags WHERE tag_id = ?;";
+
     private TagQuery() {
 
     }

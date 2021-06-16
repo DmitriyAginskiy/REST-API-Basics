@@ -9,7 +9,11 @@ public interface TagService {
 
     boolean insert(Tag tag);
 
-    Tag findByName(String name);
+    boolean delete(long id);
+
+    Optional<Tag> findById(long id);
+
+    Optional<Tag> findByName(String name);
 
     List<Tag> findTagsFromCertificate(long id);
 

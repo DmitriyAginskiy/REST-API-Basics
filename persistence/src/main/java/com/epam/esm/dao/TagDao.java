@@ -9,7 +9,11 @@ public interface TagDao {
 
     boolean insert(Tag tag);
 
+    boolean delete(long id);
+
     List<Tag> findTagsFromCertificate(long id);
+
+    Optional<Tag> findById(long id);
 
     Optional<Tag> findByName(String name);
 

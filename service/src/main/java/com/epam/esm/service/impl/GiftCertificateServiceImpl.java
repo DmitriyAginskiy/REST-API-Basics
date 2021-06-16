@@ -41,7 +41,7 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
                     newTags.forEach(tagService::insert);
                 }
                 List<Tag> updatedTags = new ArrayList<>();
-                certificate.getTags().forEach(t -> updatedTags.add(tagService.findByName(t.getName())));
+                certificate.getTags().forEach(t -> tagService.findByName(t.getName()).ifPresent(updatedTags::add));
                 certificate.setTags(updatedTags);
             }
             return certificateDao.insert(certificate);
