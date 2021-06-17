@@ -5,17 +5,57 @@ import com.epam.esm.entity.Tag;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * Interface used for interactions with tags table.
+ *
+ * @author Dzmitry Ahinski
+ */
 public interface TagDao {
 
+    /**
+     * Adds tag to the table.
+     *
+     * @param tag object to be added.
+     * @return returns true if the object was added, otherwise - false.
+     */
     boolean insert(Tag tag);
 
+    /**
+     * Deletes tag from the table.
+     *
+     * @param id of the object to be deleted.
+     * @return returns true if the object was deleted, otherwise - false.
+     */
     boolean delete(long id);
 
+    /**
+     * Finds tags by certificate id.
+     *
+     * @param id of the connected certificate.
+     * @return list of found tags.
+     */
     List<Tag> findTagsFromCertificate(long id);
 
+    /**
+     * Finds the tag by id.
+     *
+     * @param id of the object to be found.
+     * @return optional object with found tag.
+     */
     Optional<Tag> findById(long id);
 
+    /**
+     * Finds the tag by name.
+     *
+     * @param name of the object to be found.
+     * @return optional object with found tag.
+     */
     Optional<Tag> findByName(String name);
 
+    /**
+     * Finds all the tags.
+     *
+     * @return list with found tags
+     */
     List<Tag> findAll();
 }

@@ -1,5 +1,10 @@
 package com.epam.esm.dao.constant;
 
+/**
+ * Class with the gift certificates queries.
+ *
+ * @author Dzmitry Ahinski
+ */
 public class GiftCertificateQuery {
 
     public static final String INSERT_GIFT_CERTIFICATE_QUERY = "INSERT INTO gift_certificates (certificate_name, description,"

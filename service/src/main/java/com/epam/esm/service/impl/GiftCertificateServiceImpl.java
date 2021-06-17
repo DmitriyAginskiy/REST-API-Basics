@@ -24,6 +24,11 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import com.epam.esm.validator.GiftCertificateValidator;
 
+/**
+ * GiftCertificateService implementation.
+ *
+ * @author Dzmitry Ahinski
+ */
 @Service
 public class GiftCertificateServiceImpl implements GiftCertificateService {
 

@@ -12,6 +12,11 @@ import javax.sql.DataSource;
 import java.io.IOException;
 import java.util.Properties;
 
+/**
+ * Database configuration class.
+ *
+ * @author Dzmitry Ahinski
+ */
 @Configuration
 public class DatabaseConfiguration {
     private static final String PROPERTIES_PATH = "/database.properties";
@@ -23,6 +28,11 @@ public class DatabaseConfiguration {
     private static final String CREATE_DATABASE = "classpath:script/database.sql";
     private static final String INSERT_DATA = "classpath:script/data_insertion.sql";
 
+    /**
+     * Creates the data source.
+     *
+     * @return data source object
+     */
     @Profile("prod")
     @Bean
     public DataSource dataSource() throws IOException {
@@ -37,6 +47,11 @@ public class DatabaseConfiguration {
         return dataSource;
     }
 
+    /**
+     * Creates the embedded data source.
+     *
+     * @return data source object
+     */
     @Profile("dev")
     @Bean
     public DataSource embeddedDataSource() {

@@ -2,6 +2,11 @@ package com.epam.esm.dao.creator.criteria.impl;
 
 import com.epam.esm.dao.creator.criteria.Criteria;
 
+/**
+ * Class of sort criteria.
+ *
+ * @author Dzmitry Ahinski
+ */
 public class SortCriteria implements Criteria {
 
     public static final String SORT_ASC = "ASC";

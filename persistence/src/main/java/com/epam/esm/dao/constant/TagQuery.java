@@ -1,5 +1,10 @@
 package com.epam.esm.dao.constant;
 
+/**
+ * Class with the tags queries.
+ *
+ * @author Dzmitry Ahinski
+ */
 public class TagQuery {
 
     public static final String FIND_ALL_TAGS = "SELECT * FROM tags;";

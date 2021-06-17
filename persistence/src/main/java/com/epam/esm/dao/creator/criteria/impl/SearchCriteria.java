@@ -2,6 +2,11 @@ package com.epam.esm.dao.creator.criteria.impl;
 
 import com.epam.esm.dao.creator.criteria.Criteria;
 
+/**
+ * Class of search criteria.
+ *
+ * @author Dzmitry Ahinski
+ */
 public class SearchCriteria implements Criteria {
 
     private static final String WHITESPACE = " ";

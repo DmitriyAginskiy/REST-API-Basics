@@ -7,6 +7,11 @@ import com.epam.esm.dao.creator.criteria.impl.SortCriteria;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * Class that creates gift certificate search query with criteria.
+ *
+ * @author Dzmitry Ahinski
+ */
 public class GiftCertificateQueryCreator {
 
     private static final String QUERY_WITHOUT_SEARCH_CRITERIA = "SELECT gift_certificates.*, tags.* FROM gift_certificates"
@@ -18,6 +23,12 @@ public class GiftCertificateQueryCreator {
     private static final String SEMICOLON = ";";
     private static final String WHITESPACE = " ";
 
+    /**
+     * Creates gift certificate searching query with criteria.
+     *
+     * @param criteriaList as list
+     * @return String as final search query
+     */
     public static String createQuery(List<Criteria> criteriaList) {
         if(criteriaList == null || criteriaList.isEmpty()) {
             return QUERY_WITHOUT_SEARCH_CRITERIA;

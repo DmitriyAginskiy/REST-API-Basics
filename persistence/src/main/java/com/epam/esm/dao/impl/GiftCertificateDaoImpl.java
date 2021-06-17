@@ -21,6 +21,11 @@ import java.sql.Timestamp;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * GiftCertificateDao implementation.
+ *
+ * @author Dzmitry Ahinski
+ */
 @Repository
 public class GiftCertificateDaoImpl implements GiftCertificateDao {
 

@@ -14,6 +14,11 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Gift certificates mapper.
+ *
+ * @author Dzmitry Ahinski
+ */
 @Component
 public class GiftCertificateMapper implements RowMapper<GiftCertificate> {
     @Override

@@ -8,6 +8,11 @@ import org.springframework.stereotype.Component;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+/**
+ * Tags mapper.
+ *
+ * @author Dzmitry Ahinski
+ */
 @Component
 public class TagMapper implements RowMapper<Tag> {
     @Override

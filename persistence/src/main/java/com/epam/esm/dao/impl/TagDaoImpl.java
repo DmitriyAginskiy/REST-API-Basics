@@ -13,6 +13,11 @@ import javax.sql.DataSource;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * TagDao implementation.
+ *
+ * @author Dzmitry Ahinski
+ */
 @Repository
 public class TagDaoImpl implements TagDao {
     private final JdbcTemplate jdbcTemplate;

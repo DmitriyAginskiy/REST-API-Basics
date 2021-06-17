@@ -4,6 +4,11 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 
+/**
+ * Entity of a gift certificate.
+ *
+ * @author Dzmitry Ahinski
+ */
 public class GiftCertificate {
     private long id;
     private String name;

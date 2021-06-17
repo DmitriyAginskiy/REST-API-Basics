@@ -1,5 +1,10 @@
 package com.epam.esm.dao.constant;
 
+/**
+ * Class with the gift certificates columns names.
+ *
+ * @author Dzmitry Ahinski
+ */
 public class GiftCertificateColumnName {
 
     public static final String ID = "certificate_id";

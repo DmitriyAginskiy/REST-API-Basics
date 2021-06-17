@@ -7,6 +7,11 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.regex.Pattern;
 
+/**
+ * Validates gift certificate.
+ *
+ * @author Dzmitry Ahinski
+ */
 public class GiftCertificateValidator {
     private static final Pattern NAME_PATTERN = Pattern.compile("[a-zA-Z\\w\\s]{1,128}");
 

@@ -1,6 +1,12 @@
 package com.epam.esm.entity;
 
+/**
+ * Entity of a tag.
+ *
+ * @author Dzmitry Ahinski
+ */
 public class Tag {
+
     private long id;
     private String name;
 
