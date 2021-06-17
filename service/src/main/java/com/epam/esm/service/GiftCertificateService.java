@@ -1,5 +1,6 @@
 package com.epam.esm.service;
 
+import com.epam.esm.dao.creator.criteria.Criteria;
 import com.epam.esm.entity.GiftCertificate;
 
 import java.util.List;
@@ -13,7 +14,10 @@ public interface GiftCertificateService {
 
     boolean update(long id, GiftCertificate certificate);
 
-    Optional<GiftCertificate> findById(long id);
+    GiftCertificate findById(long id);
+
+    List<GiftCertificate> findAllByCriteria(String certificateName, String tagName, String description,
+                                            String sortByDate, String sortByName);
 
     List<GiftCertificate> findAll();
 }

@@ -29,7 +29,9 @@ public class GiftCertificateMapper implements RowMapper<GiftCertificate> {
         while(!rs.isAfterLast() && rs.getLong(GiftCertificateColumnName.ID) == certificateId) {
             long tagId = rs.getLong(TagColumnName.TAG_ID);
             String name = rs.getString(TagColumnName.TAG_NAME);
-            tags.add(new Tag(tagId, name));
+            if(tagId != 0 && name != null) {
+                tags.add(new Tag(tagId, name));
+            }
             rs.next();
         }
         return new GiftCertificate(certificateId, certificateName, description, price, duration, createDate, lastUpdateDate, tags);

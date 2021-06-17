@@ -3,7 +3,10 @@ package com.epam.esm.configuration;
 import com.zaxxer.hikari.HikariDataSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.jdbc.datasource.DriverManagerDataSource;
+import org.springframework.context.annotation.Profile;
+import org.springframework.jdbc.datasource.embedded.EmbeddedDatabase;
+import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
+import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
 
 import javax.sql.DataSource;
 import java.io.IOException;
@@ -17,7 +20,10 @@ public class DatabaseConfiguration {
     private static final String DATABASE_USER = "db.user";
     private static final String DATABASE_PASSWORD = "db.password";
     private static final String DATABASE_POOL_SIZE = "db.pool_size";
+    private static final String CREATE_DATABASE = "classpath:script/database.sql";
+    private static final String INSERT_DATA = "classpath:script/data_insertion.sql";
 
+    @Profile("prod")
     @Bean
     public DataSource dataSource() throws IOException {
         Properties databaseProperties = new Properties();
@@ -29,5 +35,13 @@ public class DatabaseConfiguration {
         dataSource.setPassword(databaseProperties.getProperty(DATABASE_PASSWORD));
         dataSource.setMaximumPoolSize(Integer.parseInt(databaseProperties.getProperty(DATABASE_POOL_SIZE)));
         return dataSource;
+    }
+
+    @Profile("dev")
+    @Bean
+    public DataSource embeddedDataSource() {
+        EmbeddedDatabaseBuilder builder = new EmbeddedDatabaseBuilder();
+        EmbeddedDatabase db = builder.setType(EmbeddedDatabaseType.H2).addScript(CREATE_DATABASE).addScript(INSERT_DATA).build();
+        return db;
     }
 }

@@ -2,6 +2,7 @@ package com.epam.esm.service.impl;
 
 import com.epam.esm.dao.TagDao;
 import com.epam.esm.entity.Tag;
+import com.epam.esm.exception.ElementNotFoundException;
 import com.epam.esm.service.TagService;
 import com.epam.esm.validator.TagValidator;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,18 +35,29 @@ public class TagServiceImpl implements TagService {
         Optional<Tag> tagOptional = tagDao.findById(id);
         if(tagOptional.isPresent()) {
             return tagDao.delete(id);
+        } else {
+            throw new ElementNotFoundException("There is not element with id " + id);
         }
-        return false;
     }
 
     @Override
-    public Optional<Tag> findById(long id) {
-        return tagDao.findById(id);
+    public Tag findById(long id) {
+        Optional<Tag> tagOptional = tagDao.findById(id);
+        if(tagOptional.isPresent()) {
+            return tagOptional.get();
+        } else {
+            throw new ElementNotFoundException("There is not element with id " + id);
+        }
     }
 
     @Override
-    public Optional<Tag> findByName(String name) {
-        return tagDao.findByName(name);
+    public Tag findByName(String name) {
+        Optional<Tag> tagOptional = tagDao.findByName(name);
+        if(tagOptional.isPresent()) {
+            return tagOptional.get();
+        } else {
+            throw new ElementNotFoundException("There is not element with name " + name);
+        }
     }
 
     @Override

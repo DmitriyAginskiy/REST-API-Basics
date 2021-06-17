@@ -1,5 +1,6 @@
 package com.epam.esm.dao;
 
+import com.epam.esm.dao.creator.criteria.Criteria;
 import com.epam.esm.entity.GiftCertificate;
 import com.epam.esm.entity.Tag;
 
@@ -19,6 +20,8 @@ public interface GiftCertificateDao {
     Optional<GiftCertificate> findById(long id);
 
     List<GiftCertificate> findAll();
+
+    List<GiftCertificate> findAllByCriteria(List<Criteria> criteriaList);
 
     boolean updateCertificateTags(long id, List<Tag> tags);
 }

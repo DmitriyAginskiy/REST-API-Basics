@@ -13,5 +13,6 @@ dependencies {
     implementation group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.12.3'
     implementation group: 'com.fasterxml.jackson.datatype', name: 'jackson-datatype-jsr310', version: '2.12.3'
     implementation project(':model')
+    implementation project(':persistence')
     implementation project(':service')
 }

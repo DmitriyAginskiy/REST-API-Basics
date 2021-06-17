@@ -11,9 +11,9 @@ public interface TagService {
 
     boolean delete(long id);
 
-    Optional<Tag> findById(long id);
+    Tag findById(long id);
 
-    Optional<Tag> findByName(String name);
+    Tag findByName(String name);
 
     List<Tag> findTagsFromCertificate(long id);
 

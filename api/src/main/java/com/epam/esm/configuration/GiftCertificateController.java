@@ -22,42 +22,38 @@ public class GiftCertificateController {
 
     @PostMapping("/new")
     public ResponseEntity<String> createGiftCertificate(@RequestBody GiftCertificate certificate) {
-        boolean isCreated = certificateService.insert(certificate);
-        if(isCreated) {
-            return ResponseEntity.status(HttpStatus.NO_CONTENT).body("Certificate created successfully");
-        } else {
-            return ResponseEntity.status(HttpStatus.NO_CONTENT).body("Certificate is not created!");
-        }
+        certificateService.insert(certificate);
+        return ResponseEntity.status(HttpStatus.CREATED).body("Certificate created successfully");
     }
 
     @GetMapping("/all")
-    public List<GiftCertificate> findAllGiftCertificate() {
+    public List<GiftCertificate> findAllGiftCertificates() {
         return certificateService.findAll();
+    }
+
+    @GetMapping
+    public List<GiftCertificate> findAllCertificatesByCriteria(@RequestParam(required = false) String certificateName,
+                                                               @RequestParam(required = false) String tagName,
+                                                               @RequestParam(required = false) String description,
+                                                               @RequestParam(required = false) String sortByDate,
+                                                               @RequestParam(required = false) String sortByName) {
+        return certificateService.findAllByCriteria(certificateName, tagName, description, sortByDate, sortByName);
     }
 
     @GetMapping("/{id}")
     public GiftCertificate findGiftCertificateById(@PathVariable long id) {
-        System.out.println(certificateService.findById(id).get());
-        return certificateService.findById(id).get();
+        return certificateService.findById(id);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteGiftCertificate(@PathVariable long id) {
-        boolean isDeleted = certificateService.delete(id);
-        if(isDeleted) {
-            return ResponseEntity.status(HttpStatus.NO_CONTENT).body("Certificate deleted successfully");
-        } else {
-            return ResponseEntity.status(HttpStatus.NO_CONTENT).body("Certificate is not deleted!");
-        }
+        certificateService.delete(id);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).body("Certificate deleted successfully");
     }
 
-    @PatchMapping("/{id}")
+    @PutMapping("/{id}")
     public ResponseEntity<String> updateGiftCertificate(@PathVariable long id, @RequestBody GiftCertificate certificate) {
-        boolean isUpdated = certificateService.update(id, certificate);
-        if(isUpdated) {
-            return ResponseEntity.status(HttpStatus.NO_CONTENT).body("Certificate updated successfully");
-        } else {
-            return ResponseEntity.status(HttpStatus.NO_CONTENT).body("Certificate is not updated!");
-        }
+        certificateService.update(id, certificate);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).body("Certificate updated successfully");
     }
 }

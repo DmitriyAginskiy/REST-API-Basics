@@ -2,9 +2,12 @@ package com.epam.esm.dao.impl;
 
 import com.epam.esm.dao.GiftCertificateDao;
 import com.epam.esm.dao.constant.GiftCertificateQuery;
+import com.epam.esm.dao.creator.GiftCertificateQueryCreator;
+import com.epam.esm.dao.creator.criteria.Criteria;
 import com.epam.esm.dao.mapper.GiftCertificateMapper;
 import com.epam.esm.entity.GiftCertificate;
 import com.epam.esm.entity.Tag;
+import com.epam.esm.exception.DaoException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -48,8 +51,10 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
             if (certificate.getTags() != null && !certificate.getTags().isEmpty()) {
                 updateCertificateTags(keyHolder.getKey().longValue(), certificate.getTags());
             }
+            return true;
+        } else {
+            throw new DaoException("Element not added!");
         }
-        return isInserted;
     }
 
     @Override
@@ -77,6 +82,13 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
     @Override
     public List<GiftCertificate> findAll() {
         return jdbcTemplate.query(GiftCertificateQuery.FIND_ALL_QUERY, mapper);
+    }
+
+    @Override
+    public List<GiftCertificate> findAllByCriteria(List<Criteria> criteriaList) {
+        String query = GiftCertificateQueryCreator.createQuery(criteriaList);
+        System.out.println(query);
+        return jdbcTemplate.query(query, mapper);
     }
 
     @Override

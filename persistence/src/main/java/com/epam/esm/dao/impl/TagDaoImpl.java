@@ -4,6 +4,7 @@ import com.epam.esm.dao.TagDao;
 import com.epam.esm.dao.constant.TagQuery;
 import com.epam.esm.dao.mapper.TagMapper;
 import com.epam.esm.entity.Tag;
+import com.epam.esm.exception.DaoException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
@@ -25,7 +26,12 @@ public class TagDaoImpl implements TagDao {
 
     @Override
     public boolean insert(Tag tag) {
-        return jdbcTemplate.update(TagQuery.INSERT_TAG, tag.getName()) == 1;
+        boolean isInserted = jdbcTemplate.update(TagQuery.INSERT_TAG, tag.getName()) == 1;
+        if(isInserted) {
+            return true;
+        } else {
+            throw new DaoException("Element not added!");
+        }
     }
 
     @Override

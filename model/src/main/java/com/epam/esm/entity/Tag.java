@@ -41,9 +41,7 @@ public class Tag {
 
     @Override
     public int hashCode() {
-        int result = (int) (id ^ (id >>> 32));
-        result = 31 * result + (name != null ? name.hashCode() : 0);
-        return result;
+        return 31 * (name != null ? name.hashCode() : 0);
     }
 
     @Override
