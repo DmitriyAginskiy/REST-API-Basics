@@ -5,6 +5,7 @@ import com.epam.esm.dao.creator.criteria.Criteria;
 import com.epam.esm.entity.GiftCertificate;
 import com.epam.esm.entity.Tag;
 import com.epam.esm.exception.ElementNotFoundException;
+import com.epam.esm.service.CertificateConditionStrategy;
 import com.epam.esm.service.CriteriaStrategy;
 import com.epam.esm.service.GiftCertificateService;
 import com.epam.esm.service.TagService;
@@ -117,20 +118,8 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     }
 
     private void updateCertificateFields(GiftCertificate oldCertificate, GiftCertificate newCertificate) {
-        if(GiftCertificateValidator.isNameValid(newCertificate.getName())) {
-            oldCertificate.setName(newCertificate.getName());
-        }
-        if(GiftCertificateValidator.isDescriptionValid(newCertificate.getDescription())) {
-            oldCertificate.setDescription(newCertificate.getDescription());
-        }
-        if(GiftCertificateValidator.isPriceValid(newCertificate.getPrice())) {
-            oldCertificate.setPrice(newCertificate.getPrice());
-        }
-        if(GiftCertificateValidator.isDurationValid(newCertificate.getDuration())) {
-            oldCertificate.setDuration(newCertificate.getDuration());
-        }
-        if(GiftCertificateValidator.areTagsValid(newCertificate.getTags())) {
-            oldCertificate.setTags(newCertificate.getTags());
+        for(CertificateConditionStrategy strategy : CertificateConditionStrategy.values()) {
+            strategy.changeCondition(oldCertificate, newCertificate);
         }
     }
 }
