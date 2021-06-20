@@ -52,7 +52,7 @@ public class DatabaseConfiguration {
      *
      * @return data source object
      */
-    @Profile("dev")
+    @Profile("test")
     @Bean
     public DataSource embeddedDataSource() {
         EmbeddedDatabaseBuilder builder = new EmbeddedDatabaseBuilder();

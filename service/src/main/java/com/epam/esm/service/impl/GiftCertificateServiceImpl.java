@@ -1,26 +1,19 @@
 package com.epam.esm.service.impl;
 
 import com.epam.esm.dao.GiftCertificateDao;
-import com.epam.esm.dao.constant.GiftCertificateColumnName;
-import com.epam.esm.dao.constant.TagColumnName;
 import com.epam.esm.dao.creator.criteria.Criteria;
-import com.epam.esm.dao.creator.criteria.impl.SearchCriteria;
-import com.epam.esm.dao.creator.criteria.impl.SortCriteria;
 import com.epam.esm.entity.GiftCertificate;
 import com.epam.esm.entity.Tag;
 import com.epam.esm.exception.ElementNotFoundException;
+import com.epam.esm.service.CriteriaStrategy;
 import com.epam.esm.service.GiftCertificateService;
 import com.epam.esm.service.TagService;
-import com.epam.esm.validator.TagValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 import com.epam.esm.validator.GiftCertificateValidator;
 
@@ -109,22 +102,11 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     @Override
     public List<GiftCertificate> findAllByCriteria(String certificateName, String tagName, String description, String sortByDate, String sortByName) {
         List<Criteria> criteriaList = new ArrayList<>();
-        if(GiftCertificateValidator.isNameValid(certificateName)) {
-            criteriaList.add(new SearchCriteria(GiftCertificateColumnName.NAME, certificateName));
-        }
-        if(TagValidator.isNameValid(tagName)) {
-            criteriaList.add(new SearchCriteria(TagColumnName.TAG_NAME, tagName));
-        }
-        if(GiftCertificateValidator.isDescriptionValid(description)) {
-            criteriaList.add(new SearchCriteria(GiftCertificateColumnName.DESCRIPTION, description));
-        }
-        if(sortByDate != null && (sortByDate.equalsIgnoreCase(SortCriteria.SORT_ASC) || sortByDate.equalsIgnoreCase(SortCriteria.SORT_DESC))) {
-            String sortType = sortByDate.equalsIgnoreCase(SortCriteria.SORT_ASC) ? SortCriteria.SORT_ASC : SortCriteria.SORT_DESC;
-            criteriaList.add(new SortCriteria(GiftCertificateColumnName.CREATE_DATE, sortType));
-        }
-        if(sortByName != null && (sortByName.equalsIgnoreCase(SortCriteria.SORT_ASC) || sortByName.equalsIgnoreCase(SortCriteria.SORT_DESC))) {
-            String sortType = sortByName.equalsIgnoreCase(SortCriteria.SORT_ASC) ? SortCriteria.SORT_ASC : SortCriteria.SORT_DESC;
-            criteriaList.add(new SortCriteria(GiftCertificateColumnName.NAME, sortType));
+        String[] criteriaArray = new String[] { certificateName, tagName, description, sortByDate, sortByName };
+        int counter = 0;
+        for(CriteriaStrategy criteriaStrategy : CriteriaStrategy.values()) {
+            Optional<Criteria> criteriaOptional = criteriaStrategy.createCriteria(criteriaArray[counter++]);
+            criteriaOptional.ifPresent(criteriaList::add);
         }
         return certificateDao.findAllByCriteria(criteriaList);
     }

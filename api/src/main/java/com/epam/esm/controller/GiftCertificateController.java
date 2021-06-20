@@ -91,7 +91,7 @@ public class GiftCertificateController {
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteGiftCertificate(@PathVariable long id) {
         certificateService.delete(id);
-        return ResponseEntity.status(HttpStatus.NO_CONTENT).body("Certificate deleted successfully");
+        return ResponseEntity.status(HttpStatus.OK).body("Certificate deleted successfully");
     }
 
     /**
@@ -103,6 +103,6 @@ public class GiftCertificateController {
     @PutMapping("/{id}")
     public ResponseEntity<String> updateGiftCertificate(@PathVariable long id, @RequestBody GiftCertificate certificate) {
         certificateService.update(id, certificate);
-        return ResponseEntity.status(HttpStatus.NO_CONTENT).body("Certificate updated successfully");
+        return ResponseEntity.status(HttpStatus.OK).body("Certificate updated successfully");
     }
 }
