@@ -2,7 +2,9 @@ package com.epam.esm.service.impl;
 
 import com.epam.esm.dao.TagDao;
 import com.epam.esm.entity.Tag;
+import com.epam.esm.exception.DaoException;
 import com.epam.esm.exception.ElementSearchException;
+import com.epam.esm.exception.InvalidFieldException;
 import com.epam.esm.service.TagService;
 import com.epam.esm.validator.TagValidator;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,12 +29,17 @@ public class TagServiceImpl implements TagService {
     }
 
     @Override
-    public boolean insert(Tag tag) {
+    public void insert(Tag tag) {
         Optional<Tag> tagOptional = tagDao.findByName(tag.getName());
         if(!TagValidator.isNameValid(tag.getName()) || tagOptional.isPresent()) {
-            return false;
+            try {
+                tagDao.insert(tag);
+            } catch (DaoException e) {
+                throw new ElementSearchException(e.getMessage());
+            }
+        } else {
+            throw new InvalidFieldException("Invalid name field");
         }
-        return tagDao.insert(tag);
     }
 
     @Override

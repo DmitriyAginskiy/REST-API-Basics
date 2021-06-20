@@ -4,10 +4,12 @@ import com.epam.esm.exception.DaoException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.servlet.NoHandlerFoundException;
 
 /**
- * The Dao exception handler.
+ * Global exception handler.
  *
  * @author Dzmitry Ahinski
  */
@@ -15,12 +17,13 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 public class GlobalExceptionHandler {
 
     /**
-     * Handles Dao exceptions.
+     * Handles all exceptions with 404 status.
      *
      * @return response entity
      */
-    @ExceptionHandler(DaoException.class)
-    public ResponseEntity<String> handleDaoException(DaoException e) {
-        return new ResponseEntity<>(e.getLocalizedMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ResponseEntity<String> handleException(NoHandlerFoundException e) {
+        return new ResponseEntity<>(e.getLocalizedMessage(), HttpStatus.NOT_FOUND);
     }
 }

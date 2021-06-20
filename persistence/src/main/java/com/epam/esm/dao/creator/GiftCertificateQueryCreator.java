@@ -34,20 +34,30 @@ public class GiftCertificateQueryCreator {
             return QUERY_WITHOUT_SEARCH_CRITERIA;
         }
         StringBuilder finalQuery = new StringBuilder(QUERY_WITHOUT_SEARCH_CRITERIA);
+        addSearchCriteria(criteriaList, finalQuery);
+        addSortCriteria(criteriaList, finalQuery);
+        finalQuery.append(SEMICOLON);
+        return finalQuery.toString();
+    }
+
+    private static void addSearchCriteria(List<Criteria> criteriaList, StringBuilder finalQuery) {
         List<Criteria> searchCriteriaList = criteriaList.stream().filter(t -> t instanceof SearchCriteria).collect(Collectors.toList());
         if(!searchCriteriaList.isEmpty()) {
             finalQuery.append(WHITESPACE).append(WHERE_WORD);
             boolean isFirstSearchCriteria = true;
-            for(Criteria c : searchCriteriaList) {
+            for(Criteria criteria : searchCriteriaList) {
                 if(isFirstSearchCriteria) {
                     finalQuery.append(WHITESPACE);
                     isFirstSearchCriteria = false;
                 } else {
                     finalQuery.append(WHITESPACE).append(AND_WORD).append(WHITESPACE);
                 }
-                c.addCriteria(finalQuery);
+                criteria.addCriteria(finalQuery);
             }
         }
+    }
+
+    private static void addSortCriteria(List<Criteria> criteriaList, StringBuilder finalQuery) {
         List<Criteria> sortCriteriaList = criteriaList.stream().filter(t -> t instanceof SortCriteria).collect(Collectors.toList());
         if(!sortCriteriaList.isEmpty()) {
             boolean isFirstSortCriteria = true;
@@ -61,7 +71,5 @@ public class GiftCertificateQueryCreator {
                 c.addCriteria(finalQuery);
             }
         }
-        finalQuery.append(SEMICOLON);
-        return finalQuery.toString();
     }
 }

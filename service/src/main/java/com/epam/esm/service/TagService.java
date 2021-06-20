@@ -14,9 +14,9 @@ public interface TagService {
      * Adds new tag.
      *
      * @param tag an object to be added.
-     * @return true if the object was added, otherwise - false.
+     *
      */
-    boolean insert(Tag tag);
+    void insert(Tag tag);
 
     /**
      * Deletes tag.

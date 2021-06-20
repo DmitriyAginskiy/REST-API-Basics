@@ -1,26 +1,27 @@
 package com.epam.esm.handler;
 
 import com.epam.esm.exception.ElementSearchException;
+import com.epam.esm.exception.InvalidFieldException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 /**
- * The ElementSearch exception handler.
+ * The InvalidField exception handler.
  *
  * @author Dzmitry Ahinski
  */
 @RestControllerAdvice
-public class ElementSearchExceptionHandler {
+public class InvalidFieldExceptionHandler {
 
     /**
-     * Handles Element Search exceptions.
+     * Handles Invalid Field exceptions.
      *
      * @return response entity
      */
-    @ExceptionHandler(ElementSearchException.class)
-    public ResponseEntity<String> handleException(ElementSearchException e) {
+    @ExceptionHandler(InvalidFieldException.class)
+    public ResponseEntity<String> handleException(InvalidFieldException e) {
         return new ResponseEntity<>(e.getLocalizedMessage(), HttpStatus.NOT_FOUND);
     }
 }
