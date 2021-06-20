@@ -1,6 +1,7 @@
 package com.epam.esm.dao;
 
 import com.epam.esm.entity.Tag;
+import com.epam.esm.exception.DaoException;
 
 import java.util.List;
 import java.util.Optional;
@@ -18,7 +19,7 @@ public interface TagDao {
      * @param tag object to be added.
      * @return returns true if the object was added, otherwise - false.
      */
-    boolean insert(Tag tag);
+    void insert(Tag tag) throws DaoException;
 
     /**
      * Deletes tag from the table.

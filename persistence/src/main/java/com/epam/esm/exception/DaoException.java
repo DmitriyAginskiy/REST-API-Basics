@@ -5,7 +5,7 @@ package com.epam.esm.exception;
  *
  * @author Dzmitry Ahinski
  */
-public class DaoException extends RuntimeException {
+public class DaoException extends Exception {
 
     public DaoException(String message) {
         super(message);

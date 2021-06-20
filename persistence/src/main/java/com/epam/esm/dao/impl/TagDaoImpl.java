@@ -30,11 +30,9 @@ public class TagDaoImpl implements TagDao {
     }
 
     @Override
-    public boolean insert(Tag tag) {
+    public void insert(Tag tag) throws DaoException {
         boolean isInserted = jdbcTemplate.update(TagQuery.INSERT_TAG, tag.getName()) == 1;
-        if(isInserted) {
-            return true;
-        } else {
+        if(!isInserted) {
             throw new DaoException("Element not added!");
         }
     }

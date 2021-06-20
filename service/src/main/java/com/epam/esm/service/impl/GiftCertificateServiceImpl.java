@@ -4,7 +4,8 @@ import com.epam.esm.dao.GiftCertificateDao;
 import com.epam.esm.dao.creator.criteria.Criteria;
 import com.epam.esm.entity.GiftCertificate;
 import com.epam.esm.entity.Tag;
-import com.epam.esm.exception.ElementNotFoundException;
+import com.epam.esm.exception.DaoException;
+import com.epam.esm.exception.ElementSearchException;
 import com.epam.esm.service.CertificateConditionStrategy;
 import com.epam.esm.service.CriteriaStrategy;
 import com.epam.esm.service.GiftCertificateService;
@@ -37,7 +38,7 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
 
     @Transactional
     @Override
-    public boolean insert(GiftCertificate certificate) {
+    public void insert(GiftCertificate certificate) {
         if(certificate != null && GiftCertificateValidator.areValidFields(certificate)) {
             LocalDateTime dateTime = LocalDateTime.parse(LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
             certificate.setCreateDate(dateTime);
@@ -53,7 +54,11 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
                 certificate.setTags(updatedTags);
             }
         }
-        return certificateDao.insert(certificate);
+        try {
+            certificateDao.insert(certificate);
+        } catch (DaoException e) {
+            throw new ElementSearchException(e.getMessage());
+        }
     }
 
     @Transactional
@@ -67,13 +72,13 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
             }
             return certificateDao.delete(id);
         } else {
-            throw new ElementNotFoundException("There is not element with id " + id);
+            throw new ElementSearchException("There is not element with id " + id);
         }
     }
 
     @Transactional
     @Override
-    public boolean update(long id, GiftCertificate certificate) {
+    public GiftCertificate update(long id, GiftCertificate certificate) {
         Optional<GiftCertificate> giftCertificateOptional = certificateDao.findById(id);
         if(giftCertificateOptional.isPresent()) {
             GiftCertificate oldCertificate = giftCertificateOptional.get();
@@ -84,9 +89,13 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
                     .filter(t -> !oldTags.contains(t) && oldCertificate.getTags().contains(t))
                     .collect(Collectors.toList());
             certificateDao.updateCertificateTags(id, newTags);
-            return certificateDao.update(id, oldCertificate);
+            if(certificateDao.update(id, oldCertificate)) {
+                return certificateDao.findById(id).orElseThrow(() -> new ElementSearchException("There is not element with id " + id));
+            } else {
+                throw new ElementSearchException("There is not element with id " + id);
+            }
         } else {
-            throw new ElementNotFoundException("There is not element with id " + id);
+            throw new ElementSearchException("There is not element with id " + id);
         }
     }
 
@@ -96,7 +105,7 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
         if(certificate.isPresent()) {
             return certificate.get();
         } else {
-            throw new ElementNotFoundException("Element with id " + id + " is not founded!");
+            throw new ElementSearchException("Element with id " + id + " is not founded!");
         }
     }
 

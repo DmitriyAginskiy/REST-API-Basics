@@ -2,6 +2,7 @@ package com.epam.esm.service;
 
 import com.epam.esm.entity.GiftCertificate;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Interface provides actions on gift certificates.
@@ -14,9 +15,9 @@ public interface GiftCertificateService {
      * Adds new gift certificate.
      *
      * @param certificate an object to be added.
-     * @return true if the object was added, otherwise - false.
+     *
      */
-    boolean insert(GiftCertificate certificate);
+    void insert(GiftCertificate certificate);
 
     /**
      * Deletes gift certificate.
@@ -24,16 +25,16 @@ public interface GiftCertificateService {
      * @param id of the object to be deleted.
      * @return true if the object was deleted, otherwise - false.
      */
-    boolean delete(long id);
+   boolean delete(long id);
 
     /**
      * Updates gift certificate.
      *
      * @param id of the object to be updated.
      * @param certificate new object.
-     * @return true if the object was updated, otherwise - false.
+     * @return updated object.
      */
-    boolean update(long id, GiftCertificate certificate);
+    GiftCertificate update(long id, GiftCertificate certificate);
 
     /**
      * Finds gift certificate by id.

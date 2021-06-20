@@ -3,6 +3,7 @@ package com.epam.esm.dao;
 import com.epam.esm.dao.creator.criteria.Criteria;
 import com.epam.esm.entity.GiftCertificate;
 import com.epam.esm.entity.Tag;
+import com.epam.esm.exception.DaoException;
 
 import java.util.List;
 import java.util.Optional;
@@ -18,15 +19,15 @@ public interface GiftCertificateDao {
      * Adds gift certificate to the table.
      *
      * @param certificate object to be added.
-     * @return returns true if the object was added, otherwise - false.
+     * @throws DaoException if object is not inserted
      */
-    boolean insert(GiftCertificate certificate);
+    void insert(GiftCertificate certificate) throws DaoException;
 
     /**
      * Deletes gift certificate from the table.
      *
      * @param id of the object to be deleted.
-     * @return returns true if the object was deleted, otherwise - false.
+     * @return true if the object was deleted, otherwise - false.
      */
     boolean delete(long id);
 
@@ -34,7 +35,7 @@ public interface GiftCertificateDao {
      * Removes all tags from the certificate.
      *
      * @param id of the object to be updated.
-     * @return returns true if the tags were removed, otherwise - false.
+     * @return true if the tags were removed, otherwise - false.
      */
     boolean removeTagsFromCertificate(long id);
 

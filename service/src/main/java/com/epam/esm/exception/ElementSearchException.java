@@ -5,9 +5,9 @@ package com.epam.esm.exception;
  *
  * @author Dzmitry Ahinski
  */
-public class ElementNotFoundException extends RuntimeException {
+public class ElementSearchException extends RuntimeException {
 
-    public ElementNotFoundException(String message) {
+    public ElementSearchException(String message) {
         super(message);
     }
 }

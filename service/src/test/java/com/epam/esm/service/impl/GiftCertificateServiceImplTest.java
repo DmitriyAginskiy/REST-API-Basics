@@ -44,13 +44,6 @@ public class GiftCertificateServiceImplTest {
     }
 
     @Test
-    void insert() {
-        Mockito.when(dao.insert(giftCertificate)).thenReturn(true);
-        boolean actual = service.insert(giftCertificate);
-        assertTrue(actual);
-    }
-
-    @Test
     void delete() {
         Mockito.when(dao.findById(Mockito.anyLong())).thenReturn(Optional.of(giftCertificate));
         Mockito.when(dao.delete(Mockito.anyLong())).thenReturn(true);

@@ -36,7 +36,7 @@ public class GiftCertificateController {
      * @param certificate an object to be created
      * @return ResponseEntity object with some information about creating and response status.
      */
-    @PostMapping("/new")
+    @PostMapping
     public ResponseEntity<String> createGiftCertificate(@RequestBody GiftCertificate certificate) {
         certificateService.insert(certificate);
         return ResponseEntity.status(HttpStatus.CREATED).body("Certificate created successfully");
@@ -47,7 +47,7 @@ public class GiftCertificateController {
      *
      * @return list with gift certificates.
      */
-    @GetMapping("/all")
+    @GetMapping
     public List<GiftCertificate> findAllGiftCertificates() {
         return certificateService.findAll();
     }
@@ -98,11 +98,10 @@ public class GiftCertificateController {
      * Updates gift certificate.
      *
      * @param id the id of certificate to be updated.
-     * @return Response entity with updating information.
+     * @return Updated object.
      */
     @PutMapping("/{id}")
-    public ResponseEntity<String> updateGiftCertificate(@PathVariable long id, @RequestBody GiftCertificate certificate) {
-        certificateService.update(id, certificate);
-        return ResponseEntity.status(HttpStatus.OK).body("Certificate updated successfully");
+    public GiftCertificate updateGiftCertificate(@PathVariable long id, @RequestBody GiftCertificate certificate) {
+        return certificateService.update(id, certificate);
     }
 }

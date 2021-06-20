@@ -36,7 +36,7 @@ public class TagController {
      * @param tag an object to be created
      * @return ResponseEntity object with some information about creating and response status.
      */
-    @PostMapping("/new")
+    @PostMapping
     public ResponseEntity<String> createTag(@RequestBody Tag tag) {
         tagService.insert(tag);
         return ResponseEntity.status(HttpStatus.CREATED).body("Tag created successfully!");
@@ -58,11 +58,16 @@ public class TagController {
      *
      * @return list with found tags.
      */
-    @GetMapping("/all")
+    @GetMapping
     public List<Tag> findAll() {
         return tagService.findAll();
     }
 
+    /**
+     * Deletes tag by id
+     *
+     * @return list with found tags.
+     */
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteTag(@PathVariable long id) {
         tagService.delete(id);

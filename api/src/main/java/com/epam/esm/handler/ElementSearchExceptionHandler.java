@@ -1,6 +1,6 @@
 package com.epam.esm.handler;
 
-import com.epam.esm.exception.ElementNotFoundException;
+import com.epam.esm.exception.ElementSearchException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -12,15 +12,15 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
  * @author Dzmitry Ahinski
  */
 @RestControllerAdvice
-public class ElementNotFoundExceptionHandler {
+public class ElementSearchExceptionHandler {
 
     /**
-     * Handles ElementNotFound exceptions.
+     * Handles all exceptions.
      *
      * @return response entity
      */
-    @ExceptionHandler(ElementNotFoundException.class)
-    public ResponseEntity<String> handleElementNotFoundException(ElementNotFoundException e) {
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<String> handleException(Exception e) {
         return new ResponseEntity<>(e.getLocalizedMessage(), HttpStatus.NOT_FOUND);
     }
 }

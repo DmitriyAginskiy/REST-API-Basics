@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
  * @author Dzmitry Ahinski
  */
 @RestControllerAdvice
-public class DaoExceptionHandler {
+public class GlobalExceptionHandler {
 
     /**
      * Handles Dao exceptions.

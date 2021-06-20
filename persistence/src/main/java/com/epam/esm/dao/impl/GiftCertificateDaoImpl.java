@@ -39,7 +39,7 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
     }
 
     @Override
-    public boolean insert(GiftCertificate certificate) {
+    public void insert(GiftCertificate certificate) throws DaoException {
         KeyHolder keyHolder = new GeneratedKeyHolder();
         boolean isInserted = jdbcTemplate.update(con -> {
             PreparedStatement statement = con.prepareStatement(GiftCertificateQuery.INSERT_GIFT_CERTIFICATE_QUERY,
@@ -56,9 +56,8 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
             if (certificate.getTags() != null && !certificate.getTags().isEmpty()) {
                 updateCertificateTags(keyHolder.getKey().longValue(), certificate.getTags());
             }
-            return true;
         } else {
-            throw new DaoException("Element not added!");
+            throw new DaoException("Element " + certificate + "is not added!");
         }
     }
 
@@ -92,12 +91,11 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
     @Override
     public List<GiftCertificate> findAllByCriteria(List<Criteria> criteriaList) {
         String query = GiftCertificateQueryCreator.createQuery(criteriaList);
-        System.out.println(query);
         return jdbcTemplate.query(query, mapper);
     }
 
     @Override
     public boolean updateCertificateTags(long id, List<Tag> tags) {
-        return tags.stream().allMatch(t -> jdbcTemplate.update(GiftCertificateQuery.CERTIFICATE_UPDATE_TAGS, id, t.getId()) == 1);
+        return tags.stream().allMatch(tag -> jdbcTemplate.update(GiftCertificateQuery.CERTIFICATE_UPDATE_TAGS, id, tag.getId()) == 1);
     }
 }
