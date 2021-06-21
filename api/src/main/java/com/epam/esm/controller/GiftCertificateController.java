@@ -38,7 +38,6 @@ public class GiftCertificateController {
      */
     @PostMapping
     public ResponseEntity<String> createGiftCertificate(@RequestBody GiftCertificate certificate) {
-        System.out.println(certificate);
         certificateService.insert(certificate);
         return ResponseEntity.status(HttpStatus.CREATED).body("Certificate created successfully");
     }
