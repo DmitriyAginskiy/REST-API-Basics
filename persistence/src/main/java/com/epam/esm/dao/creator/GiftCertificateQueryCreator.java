@@ -14,8 +14,8 @@ import java.util.stream.Collectors;
  */
 public class GiftCertificateQueryCreator {
 
-    private static final String QUERY_WITHOUT_SEARCH_CRITERIA = "SELECT gift_certificates.*, tags.* FROM gift_certificates"
-            + " LEFT JOIN gift_certificates_has_tags ON certificate_id = gift_certificates_id_fk LEFT JOIN tags ON tag_id = tags_id_fk";
+    private static final String QUERY_WITHOUT_SEARCH_CRITERIA = "SELECT gift_certificates.*, tags.* FROM gift_certificates LEFT JOIN " +
+            "gift_certificates_has_tags ON certificate_id = gift_certificates_id_fk LEFT JOIN tags ON tag_id = tags_id_fk";
     private static final String AND_WORD = "AND";
     private static final String WHERE_WORD = "WHERE";
     private static final String ORDER_BY = "ORDER BY";

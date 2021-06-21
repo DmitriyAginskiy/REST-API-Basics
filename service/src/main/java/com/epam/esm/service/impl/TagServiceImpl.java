@@ -31,7 +31,7 @@ public class TagServiceImpl implements TagService {
     @Override
     public void insert(Tag tag) {
         Optional<Tag> tagOptional = tagDao.findByName(tag.getName());
-        if(!TagValidator.isNameValid(tag.getName()) || tagOptional.isPresent()) {
+        if(!TagValidator.isNameValid(tag.getName()) || tagOptional.isEmpty()) {
             try {
                 tagDao.insert(tag);
             } catch (DaoException e) {

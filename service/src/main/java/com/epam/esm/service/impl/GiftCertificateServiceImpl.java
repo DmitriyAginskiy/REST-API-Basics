@@ -6,6 +6,7 @@ import com.epam.esm.entity.GiftCertificate;
 import com.epam.esm.entity.Tag;
 import com.epam.esm.exception.DaoException;
 import com.epam.esm.exception.ElementSearchException;
+import com.epam.esm.exception.InvalidFieldException;
 import com.epam.esm.service.CertificateConditionStrategy;
 import com.epam.esm.service.CriteriaStrategy;
 import com.epam.esm.service.GiftCertificateService;
@@ -53,11 +54,13 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
                 tagsWithoutDuplicates.forEach(t -> updatedTags.add(tagService.findByName(t.getName())));
                 certificate.setTags(updatedTags);
             }
-        }
-        try {
-            certificateDao.insert(certificate);
-        } catch (DaoException e) {
-            throw new ElementSearchException(e.getMessage());
+            try {
+                certificateDao.insert(certificate);
+            } catch (DaoException e) {
+                throw new ElementSearchException(e.getMessage());
+            }
+        } else {
+            throw new InvalidFieldException("Gift certificate " + certificate + " is not valid!");
         }
     }
 
@@ -110,7 +113,7 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     }
 
     @Override
-    public List<GiftCertificate> findAllByCriteria(String certificateName, String tagName, String description, String sortByDate, String sortByName) {
+    public List<GiftCertificate> findAll(String certificateName, String tagName, String description, String sortByDate, String sortByName) {
         List<Criteria> criteriaList = new ArrayList<>();
         String[] criteriaArray = new String[] { certificateName, tagName, description, sortByDate, sortByName };
         int counter = 0;
@@ -118,13 +121,13 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
             Optional<Criteria> criteriaOptional = criteriaStrategy.createCriteria(criteriaArray[counter++]);
             criteriaOptional.ifPresent(criteriaList::add);
         }
-        return certificateDao.findAllByCriteria(criteriaList);
+        if(criteriaList.isEmpty()) {
+            return certificateDao.findAll();
+        } else {
+            return certificateDao.findAllByCriteria(criteriaList);
+        }
     }
 
-    @Override
-    public List<GiftCertificate> findAll() {
-        return certificateDao.findAll();
-    }
 
     private void updateCertificateFields(GiftCertificate oldCertificate, GiftCertificate newCertificate) {
         for(CertificateConditionStrategy strategy : CertificateConditionStrategy.values()) {

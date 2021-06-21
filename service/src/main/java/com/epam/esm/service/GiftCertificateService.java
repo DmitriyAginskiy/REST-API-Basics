@@ -54,13 +54,6 @@ public interface GiftCertificateService {
      * @param sortByName criteria.
      * @return list of the found gift certificates.
      */
-    List<GiftCertificate> findAllByCriteria(String certificateName, String tagName, String description,
+    List<GiftCertificate> findAll(String certificateName, String tagName, String description,
                                             String sortByDate, String sortByName);
-
-    /**
-     * Finds all gift certificates.
-     *
-     * @return list of the found gift certificates.
-     */
-    List<GiftCertificate> findAll();
 }

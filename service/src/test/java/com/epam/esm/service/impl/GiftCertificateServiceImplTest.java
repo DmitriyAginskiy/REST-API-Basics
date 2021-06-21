@@ -39,7 +39,7 @@ public class GiftCertificateServiceImplTest {
         List<GiftCertificate> expected = new ArrayList<>();
         expected.add(giftCertificate);
         Mockito.when(dao.findAll()).thenReturn(expected);
-        List<GiftCertificate> actual = service.findAll();
+        List<GiftCertificate> actual = service.findAll("someName", "sometag", "somedesc", "ASC", "DESC");
         assertEquals(expected, actual);
     }
 

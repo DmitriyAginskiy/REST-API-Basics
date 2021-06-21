@@ -31,14 +31,13 @@ public class GiftCertificateMapper implements RowMapper<GiftCertificate> {
         LocalDateTime createDate = rs.getObject(GiftCertificateColumnName.CREATE_DATE, LocalDateTime.class);
         LocalDateTime lastUpdateDate = rs.getObject(GiftCertificateColumnName.LAST_UPDATE_DATE, LocalDateTime.class);
         List<Tag> tags = new ArrayList<>();
-        while(!rs.isAfterLast() && rs.getLong(GiftCertificateColumnName.ID) == certificateId) {
+        do {
             long tagId = rs.getLong(TagColumnName.TAG_ID);
-            String name = rs.getString(TagColumnName.TAG_NAME);
-            if(tagId != 0 && name != null) {
-                tags.add(new Tag(tagId, name));
+            String tagName = rs.getString(TagColumnName.TAG_NAME);
+            if (tagId != 0 && tagName != null) {
+                tags.add(new Tag(tagId, tagName));
             }
-            rs.next();
-        }
+        } while (!rs.isAfterLast() && rs.getLong(GiftCertificateColumnName.ID) == certificateId);
         return new GiftCertificate(certificateId, certificateName, description, price, duration, createDate, lastUpdateDate, tags);
     }
 }

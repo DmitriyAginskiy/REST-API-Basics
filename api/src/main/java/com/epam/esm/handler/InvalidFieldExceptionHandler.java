@@ -1,6 +1,5 @@
 package com.epam.esm.handler;
 
-import com.epam.esm.exception.ElementSearchException;
 import com.epam.esm.exception.InvalidFieldException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
