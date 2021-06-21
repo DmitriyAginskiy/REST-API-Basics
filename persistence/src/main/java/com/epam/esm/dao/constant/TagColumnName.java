@@ -5,7 +5,7 @@ package com.epam.esm.dao.constant;
  *
  * @author Dzmitry Ahinski
  */
-public class TagColumnName {
+public final class TagColumnName {
 
     public static final String TAG_ID = "tag_id";
 

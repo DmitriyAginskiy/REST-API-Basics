@@ -5,7 +5,7 @@ package com.epam.esm.dao.constant;
  *
  * @author Dzmitry Ahinski
  */
-public class GiftCertificateColumnName {
+public final class GiftCertificateColumnName {
 
     public static final String ID = "certificate_id";
 
