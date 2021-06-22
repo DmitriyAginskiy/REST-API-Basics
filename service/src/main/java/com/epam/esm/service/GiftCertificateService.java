@@ -2,7 +2,6 @@ package com.epam.esm.service;
 
 import com.epam.esm.entity.GiftCertificate;
 import java.util.List;
-import java.util.Optional;
 
 /**
  * Interface provides actions on gift certificates.

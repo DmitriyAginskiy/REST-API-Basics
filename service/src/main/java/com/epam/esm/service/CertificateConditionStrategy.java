@@ -8,6 +8,11 @@ import com.epam.esm.validator.GiftCertificateValidator;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Enum contains methods for certificate fields.
+ *
+ * @author Dzmitry Ahinski
+ */
 public enum CertificateConditionStrategy {
 
     NAME {
@@ -41,8 +46,20 @@ public enum CertificateConditionStrategy {
         }
     };
 
+    /**
+     * Adds new field condition to the list.
+     *
+     * @param certificate as GiftCertificate object
+     * @param conditionList with FieldCondition objects
+     */
     public abstract void addCondition(GiftCertificate certificate, List<FieldCondition> conditionList);
 
+    /**
+     * Creates list with FieldCondition objects.
+     *
+     * @param certificate as GiftCertificate object
+     * @return list with FieldCondition objects
+     */
     public static List<FieldCondition> createConditionsList(GiftCertificate certificate) {
         List<FieldCondition> conditionList = new ArrayList<>();
         for(CertificateConditionStrategy conditionStrategy : CertificateConditionStrategy.values()) {
