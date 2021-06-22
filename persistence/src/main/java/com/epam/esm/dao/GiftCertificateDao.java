@@ -1,5 +1,6 @@
 package com.epam.esm.dao;
 
+import com.epam.esm.dao.creator.FieldCondition;
 import com.epam.esm.dao.creator.criteria.Criteria;
 import com.epam.esm.entity.GiftCertificate;
 import com.epam.esm.entity.Tag;
@@ -21,7 +22,7 @@ public interface GiftCertificateDao {
      * @param certificate object to be added.
      * @throws DaoException if object is not inserted
      */
-    void insert(GiftCertificate certificate) throws DaoException;
+    long insert(GiftCertificate certificate) throws DaoException;
 
     /**
      * Deletes gift certificate from the table.
@@ -29,7 +30,7 @@ public interface GiftCertificateDao {
      * @param id of the object to be deleted.
      * @return true if the object was deleted, otherwise - false.
      */
-    boolean delete(long id);
+    void delete(long id);
 
     /**
      * Removes all tags from the certificate.
@@ -46,7 +47,7 @@ public interface GiftCertificateDao {
      * @param certificate new object.
      * @return returns true if the object was updated, otherwise - false.
      */
-    boolean update(long id, GiftCertificate certificate);
+    void update(long id, List<FieldCondition> conditionList) throws DaoException;
 
     /**
      * Finds the certificate by id.

@@ -1,8 +1,11 @@
 package com.epam.esm.dao.impl;
 
 import com.epam.esm.dao.GiftCertificateDao;
+import com.epam.esm.dao.constant.GiftCertificateColumnName;
 import com.epam.esm.dao.constant.GiftCertificateQuery;
+import com.epam.esm.dao.creator.FieldCondition;
 import com.epam.esm.dao.creator.GiftCertificateQueryCreator;
+import com.epam.esm.dao.creator.TagQueryCreator;
 import com.epam.esm.dao.creator.criteria.Criteria;
 import com.epam.esm.dao.mapper.GiftCertificateMapper;
 import com.epam.esm.entity.GiftCertificate;
@@ -15,6 +18,7 @@ import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
+import java.math.BigDecimal;
 import java.sql.PreparedStatement;
 import java.sql.Statement;
 import java.sql.Timestamp;
@@ -39,7 +43,7 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
     }
 
     @Override
-    public void insert(GiftCertificate certificate) throws DaoException {
+    public long insert(GiftCertificate certificate) throws DaoException {
         KeyHolder keyHolder = new GeneratedKeyHolder();
         boolean isInserted = jdbcTemplate.update(con -> {
             PreparedStatement statement = con.prepareStatement(GiftCertificateQuery.INSERT_GIFT_CERTIFICATE_QUERY,
@@ -56,14 +60,15 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
             if (certificate.getTags() != null && !certificate.getTags().isEmpty()) {
                 updateCertificateTags(keyHolder.getKey().longValue(), certificate.getTags());
             }
+            return keyHolder.getKey().longValue();
         } else {
             throw new DaoException("Element " + certificate + "is not added!");
         }
     }
 
     @Override
-    public boolean delete(long id) {
-        return jdbcTemplate.update(GiftCertificateQuery.DELETE_CERTIFICATE_QUERY, id) == 1;
+    public void delete(long id) {
+        jdbcTemplate.update(GiftCertificateQuery.DELETE_CERTIFICATE_QUERY, id);
     }
 
     @Override
@@ -72,10 +77,32 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
     }
 
     @Override
-    public boolean update(long id, GiftCertificate certificate) {
-        return jdbcTemplate.update(GiftCertificateQuery.UPDATE_CERTIFICATE_QUERY, certificate.getName(),
-                certificate.getDescription(), certificate.getPrice(), certificate.getDuration(), certificate.getLastUpdateDate(),
-                id) == 1;
+    public void update(long id, List<FieldCondition> conditionList) throws DaoException {
+        String query = GiftCertificateQueryCreator.createUpdateQuery(conditionList);
+        boolean isUpdated = jdbcTemplate.update(con -> {
+            PreparedStatement statement = con.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
+            FieldCondition buffer = null;
+            for(int i = 1; i < conditionList.size() + 1; i++) {
+                buffer = conditionList.get(i - 1);
+                switch (buffer.getName()) {
+                    case GiftCertificateColumnName.PRICE: {
+                        statement.setBigDecimal(i, new BigDecimal(buffer.getValue()));
+                        break;
+                    } case GiftCertificateColumnName.DURATION: {
+                        statement.setInt(i, Integer.parseInt(buffer.getValue()));
+                        break;
+                    } default: {
+                        statement.setString(i, buffer.getValue());
+                        break;
+                    }
+                }
+            }
+            statement.setLong(conditionList.size() + 1, id);
+            return statement;
+        }) == 1;
+        if (!isUpdated) {
+            throw new DaoException("Element with id " + id + "is not updated!");
+        }
     }
 
     @Override
@@ -90,7 +117,7 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
 
     @Override
     public List<GiftCertificate> findAllByCriteria(List<Criteria> criteriaList) {
-        String query = GiftCertificateQueryCreator.createQuery(criteriaList);
+        String query = GiftCertificateQueryCreator.createSearchQuery(criteriaList);
         return jdbcTemplate.query(query, mapper);
     }
 

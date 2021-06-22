@@ -42,10 +42,9 @@ public class TagController {
      * @param tag an object to be created
      * @return ResponseEntity object with some information about creating and response status.
      */
-    @PostMapping
-    public ResponseEntity<String> createTag(@RequestBody Tag tag) {
-        tagService.insert(tag);
-        return ResponseEntity.status(HttpStatus.CREATED).body("Tag created successfully!");
+    @PostMapping(produces = "application/json; charset=utf-8")
+    public Tag createTag(@RequestBody Tag tag) {
+        return tagService.insert(tag);
     }
 
     /**
@@ -54,7 +53,7 @@ public class TagController {
      * @param id the id of tag to be found.
      * @return found tag object.
      */
-    @GetMapping("/{id}")
+    @GetMapping(value = "/{id}", produces = "application/json; charset=utf-8")
     public Tag findTagById(@PathVariable long id) {
         return tagService.findById(id);
     }
@@ -64,7 +63,7 @@ public class TagController {
      *
      * @return list with found tags.
      */
-    @GetMapping
+    @GetMapping(produces = "application/json; charset=utf-8")
     public List<Tag> findAll() {
         return tagService.findAll();
     }
@@ -74,9 +73,9 @@ public class TagController {
      *
      * @return list with found tags.
      */
-    @DeleteMapping("/{id}")
+    @DeleteMapping(value = "/{id}", produces = "application/json; charset=utf-8")
     public ResponseEntity<String> deleteTag(@PathVariable long id) {
         tagService.delete(id);
-        return ResponseEntity.status(HttpStatus.OK).body("Tag deleted successfully!");
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).body("");
     }
 }

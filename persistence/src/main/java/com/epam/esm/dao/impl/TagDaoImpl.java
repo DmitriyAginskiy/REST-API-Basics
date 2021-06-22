@@ -2,14 +2,19 @@ package com.epam.esm.dao.impl;
 
 import com.epam.esm.dao.TagDao;
 import com.epam.esm.dao.constant.TagQuery;
+import com.epam.esm.dao.creator.TagQueryCreator;
 import com.epam.esm.dao.mapper.TagMapper;
 import com.epam.esm.entity.Tag;
 import com.epam.esm.exception.DaoException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
+import java.sql.PreparedStatement;
+import java.sql.Statement;
 import java.util.List;
 import java.util.Optional;
 
@@ -30,10 +35,17 @@ public class TagDaoImpl implements TagDao {
     }
 
     @Override
-    public void insert(Tag tag) throws DaoException {
-        boolean isInserted = jdbcTemplate.update(TagQuery.INSERT_TAG, tag.getName()) == 1;
-        if(!isInserted) {
-            throw new DaoException("Element not added!");
+    public long insert(Tag tag) throws DaoException {
+        KeyHolder keyHolder = new GeneratedKeyHolder();
+        boolean isInserted = jdbcTemplate.update(con -> {
+            PreparedStatement statement = con.prepareStatement(TagQuery.INSERT_TAG, Statement.RETURN_GENERATED_KEYS);
+            statement.setString(1, tag.getName());
+            return statement;
+        }, keyHolder) == 1;
+        if(isInserted && keyHolder.getKey() != null) {
+            return keyHolder.getKey().longValue();
+        } else {
+            throw new DaoException("Element " + tag + " is not added!");
         }
     }
 
@@ -60,5 +72,17 @@ public class TagDaoImpl implements TagDao {
     @Override
     public List<Tag> findAll() {
         return jdbcTemplate.query(TagQuery.FIND_ALL_TAGS, mapper);
+    }
+
+    @Override
+    public List<Tag> findAllExisting(List<Tag> tags) {
+        String query = TagQueryCreator.createExistingTagsSelectionQuery(tags.size());
+        return jdbcTemplate.query(con -> {
+            PreparedStatement statement = con.prepareStatement(query);
+            for(int i = 0; i < tags.size(); i++) {
+                statement.setString(i + 1, tags.get(i).getName());
+            }
+            return statement;
+        }, mapper);
     }
 }

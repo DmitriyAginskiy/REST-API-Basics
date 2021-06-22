@@ -19,7 +19,7 @@ public interface TagDao {
      * @param tag object to be added.
      * @return returns true if the object was added, otherwise - false.
      */
-    void insert(Tag tag) throws DaoException;
+    long insert(Tag tag) throws DaoException;
 
     /**
      * Deletes tag from the table.
@@ -59,4 +59,6 @@ public interface TagDao {
      * @return list with found tags
      */
     List<Tag> findAll();
+
+    List<Tag> findAllExisting(List<Tag> tags);
 }

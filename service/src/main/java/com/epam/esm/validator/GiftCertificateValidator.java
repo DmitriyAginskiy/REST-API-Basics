@@ -37,6 +37,6 @@ public class GiftCertificateValidator {
     }
 
     public static boolean areTagsValid(List<Tag> tags) {
-        return tags.stream().allMatch(t -> TagValidator.isNameValid(t.getName()));
+        return tags != null && tags.stream().allMatch(t -> TagValidator.isNameValid(t.getName()));
     }
 }

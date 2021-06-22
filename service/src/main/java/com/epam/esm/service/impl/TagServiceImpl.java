@@ -29,11 +29,12 @@ public class TagServiceImpl implements TagService {
     }
 
     @Override
-    public void insert(Tag tag) {
+    public Tag insert(Tag tag) {
         Optional<Tag> tagOptional = tagDao.findByName(tag.getName());
-        if(!TagValidator.isNameValid(tag.getName()) || tagOptional.isEmpty()) {
+        if(TagValidator.isNameValid(tag.getName()) && tagOptional.isEmpty()) {
             try {
-                tagDao.insert(tag);
+                long id = tagDao.insert(tag);
+                return tagDao.findById(id).orElseThrow(() -> new ElementSearchException("Tag " + tag + " is not added!"));
             } catch (DaoException e) {
                 throw new ElementSearchException(e.getMessage());
             }
@@ -43,10 +44,10 @@ public class TagServiceImpl implements TagService {
     }
 
     @Override
-    public boolean delete(long id) {
+    public void delete(long id) {
         Optional<Tag> tagOptional = tagDao.findById(id);
         if(tagOptional.isPresent()) {
-            return tagDao.delete(id);
+            tagDao.delete(id);
         } else {
             throw new ElementSearchException("There is not element with id " + id);
         }
@@ -63,16 +64,6 @@ public class TagServiceImpl implements TagService {
     }
 
     @Override
-    public Tag findByName(String name) {
-        Optional<Tag> tagOptional = tagDao.findByName(name);
-        if(tagOptional.isPresent()) {
-            return tagOptional.get();
-        } else {
-            throw new ElementSearchException("There is not element with name " + name);
-        }
-    }
-
-    @Override
     public List<Tag> findTagsFromCertificate(long id) {
         return tagDao.findTagsFromCertificate(id);
     }
@@ -80,5 +71,10 @@ public class TagServiceImpl implements TagService {
     @Override
     public List<Tag> findAll() {
         return tagDao.findAll();
+    }
+
+    @Override
+    public List<Tag> findAllExisting(List<Tag> tags) {
+        return tagDao.findAllExisting(tags);
     }
 }

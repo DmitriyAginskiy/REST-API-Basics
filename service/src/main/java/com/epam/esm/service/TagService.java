@@ -16,7 +16,7 @@ public interface TagService {
      * @param tag an object to be added.
      *
      */
-    void insert(Tag tag);
+    Tag insert(Tag tag);
 
     /**
      * Deletes tag.
@@ -24,7 +24,7 @@ public interface TagService {
      * @param id of the object to be deleted.
      * @return true if the object was deleted, otherwise - false.
      */
-    boolean delete(long id);
+    void delete(long id);
 
     /**
      * Finds tag by id.
@@ -33,14 +33,6 @@ public interface TagService {
      * @return found tag object
      */
     Tag findById(long id);
-
-    /**
-     * Finds tag by name.
-     *
-     * @param name of the object to be found.
-     * @return found tag object
-     */
-    Tag findByName(String name);
 
     /**
      * Finds all tags connected with the certificate.
@@ -56,4 +48,6 @@ public interface TagService {
      * @return list of the found tags.
      */
     List<Tag> findAll();
+
+    List<Tag> findAllExisting(List<Tag> tags);
 }

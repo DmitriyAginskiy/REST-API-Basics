@@ -1,50 +1,54 @@
 package com.epam.esm.service;
 
+import com.epam.esm.dao.constant.GiftCertificateColumnName;
+import com.epam.esm.dao.creator.FieldCondition;
 import com.epam.esm.entity.GiftCertificate;
 import com.epam.esm.validator.GiftCertificateValidator;
+
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 
 public enum CertificateConditionStrategy {
 
     NAME {
         @Override
-        public void changeCondition(GiftCertificate oldCertificate, GiftCertificate newCertificate) {
-            if(GiftCertificateValidator.isNameValid(newCertificate.getName())) {
-                oldCertificate.setName(newCertificate.getName());
+        public void addCondition(GiftCertificate certificate, List<FieldCondition> conditionList) {
+            if(GiftCertificateValidator.isNameValid(certificate.getName())) {
+                conditionList.add(new FieldCondition(GiftCertificateColumnName.NAME, certificate.getName()));
             }
         }
     },
     DESCRIPTION {
         @Override
-        public void changeCondition(GiftCertificate oldCertificate, GiftCertificate newCertificate) {
-            if(GiftCertificateValidator.isDescriptionValid(newCertificate.getDescription())) {
-                oldCertificate.setDescription(newCertificate.getDescription());
+        public void addCondition(GiftCertificate certificate, List<FieldCondition> conditionList) {
+            if(GiftCertificateValidator.isDescriptionValid(certificate.getDescription())) {
+                conditionList.add(new FieldCondition(GiftCertificateColumnName.DESCRIPTION, certificate.getDescription()));
             }
         }
     },
     PRICE {
-        @Override
-        public void changeCondition(GiftCertificate oldCertificate, GiftCertificate newCertificate) {
-            if(GiftCertificateValidator.isPriceValid(newCertificate.getPrice())) {
-                oldCertificate.setPrice(newCertificate.getPrice());
+        public void addCondition(GiftCertificate certificate, List<FieldCondition> conditionList) {
+            if(GiftCertificateValidator.isPriceValid(certificate.getPrice())) {
+                conditionList.add(new FieldCondition(GiftCertificateColumnName.PRICE, certificate.getPrice().toString()));
             }
         }
     },
     DURATION {
-        @Override
-        public void changeCondition(GiftCertificate oldCertificate, GiftCertificate newCertificate) {
-            if(GiftCertificateValidator.isDurationValid(newCertificate.getDuration())) {
-                oldCertificate.setDuration(newCertificate.getDuration());
-            }
-        }
-    },
-    TAGS {
-        @Override
-        public void changeCondition(GiftCertificate oldCertificate, GiftCertificate newCertificate) {
-            if(GiftCertificateValidator.areTagsValid(newCertificate.getTags())) {
-                oldCertificate.setTags(newCertificate.getTags());
+        public void addCondition(GiftCertificate certificate, List<FieldCondition> conditionList) {
+            if(GiftCertificateValidator.isDurationValid(certificate.getDuration())) {
+                conditionList.add(new FieldCondition(GiftCertificateColumnName.DURATION, Integer.toString(certificate.getDuration())));
             }
         }
     };
 
-    public abstract void changeCondition(GiftCertificate oldCertificate, GiftCertificate newCertificate);
+    public abstract void addCondition(GiftCertificate certificate, List<FieldCondition> conditionList);
+
+    public static List<FieldCondition> createConditionsList(GiftCertificate certificate) {
+        List<FieldCondition> conditionList = new ArrayList<>();
+        for(CertificateConditionStrategy conditionStrategy : CertificateConditionStrategy.values()) {
+            conditionStrategy.addCondition(certificate, conditionList);
+        }
+        return conditionList;
+    }
 }

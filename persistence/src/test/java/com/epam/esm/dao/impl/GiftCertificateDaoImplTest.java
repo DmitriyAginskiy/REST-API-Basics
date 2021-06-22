@@ -7,6 +7,7 @@ import com.epam.esm.dao.creator.criteria.Criteria;
 import com.epam.esm.dao.creator.criteria.impl.SearchCriteria;
 import com.epam.esm.dao.mapper.GiftCertificateMapper;
 import com.epam.esm.entity.GiftCertificate;
+import com.epam.esm.exception.DaoException;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
@@ -19,18 +20,6 @@ class GiftCertificateDaoImplTest {
 
     private static final GiftCertificateDao dao = new GiftCertificateDaoImpl(new DatabaseConfiguration().embeddedDataSource(),
             new GiftCertificateMapper());
-
-    @Test
-    void delete() {
-        boolean actual = dao.delete(3);
-        assertTrue(actual);
-    }
-
-    @Test
-    void update() {
-        boolean actual = dao.update(522, new GiftCertificate());
-        assertFalse(actual);
-    }
 
     @Test
     void findById() {
@@ -57,7 +46,12 @@ class GiftCertificateDaoImplTest {
         GiftCertificate certificate = new GiftCertificate(5, "Black widow2",  "Marvel2",
                 new BigDecimal("10"), 15, LocalDateTime.of(2019, 9, 11, 15, 32, 12),
                 LocalDateTime.of(2021, 3, 11, 15, 32, 12), new ArrayList<>());
-        boolean actual = dao.insert(certificate);
+        boolean actual = false;
+        try {
+            actual = dao.insert(certificate) > 0;
+        } catch (DaoException e) {
+            e.printStackTrace();
+        }
         assertTrue(actual);
     }
 }

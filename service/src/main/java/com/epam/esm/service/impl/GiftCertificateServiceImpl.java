@@ -1,6 +1,7 @@
 package com.epam.esm.service.impl;
 
 import com.epam.esm.dao.GiftCertificateDao;
+import com.epam.esm.dao.creator.FieldCondition;
 import com.epam.esm.dao.creator.criteria.Criteria;
 import com.epam.esm.entity.GiftCertificate;
 import com.epam.esm.entity.Tag;
@@ -16,7 +17,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import com.epam.esm.validator.GiftCertificateValidator;
 
@@ -39,23 +43,25 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
 
     @Transactional
     @Override
-    public void insert(GiftCertificate certificate) {
+    public GiftCertificate insert(GiftCertificate certificate) {
         if(certificate != null && GiftCertificateValidator.areValidFields(certificate)) {
             LocalDateTime dateTime = LocalDateTime.parse(LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
             certificate.setCreateDate(dateTime);
             certificate.setLastUpdateDate(dateTime);
             if(certificate.getTags() != null) {
                 HashSet<Tag> tagsWithoutDuplicates = new HashSet<>(certificate.getTags());
-                List<Tag> newTags = tagsWithoutDuplicates.stream().filter(t -> !tagService.findAll().contains(t)).collect(Collectors.toList());
+                List<Tag> existingTags = tagService.findAllExisting(certificate.getTags());
+                List<Tag> newTags = tagsWithoutDuplicates.stream().filter(t -> !existingTags
+                        .contains(t)).collect(Collectors.toList());
                 if(newTags.size() > 0) {
                     newTags.forEach(tagService::insert);
                 }
-                List<Tag> updatedTags = new ArrayList<>();
-                tagsWithoutDuplicates.forEach(t -> updatedTags.add(tagService.findByName(t.getName())));
-                certificate.setTags(updatedTags);
+                certificate.setTags(tagService.findAllExisting(certificate.getTags()));
             }
             try {
-                certificateDao.insert(certificate);
+                long id = certificateDao.insert(certificate);
+                Optional<GiftCertificate> certificateOptional = certificateDao.findById(id);
+                return certificateOptional.orElseThrow(() -> new ElementSearchException("Gift certificate " + certificate + " is not added!"));
             } catch (DaoException e) {
                 throw new ElementSearchException(e.getMessage());
             }
@@ -66,14 +72,14 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
 
     @Transactional
     @Override
-    public boolean delete(long id) {
+    public void delete(long id) {
         Optional<GiftCertificate> giftCertificateOptional = certificateDao.findById(id);
         if(giftCertificateOptional.isPresent()) {
             GiftCertificate giftCertificate = giftCertificateOptional.get();
             if(giftCertificate.getTags() != null && !giftCertificate.getTags().isEmpty()) {
                 certificateDao.removeTagsFromCertificate(id);
             }
-            return certificateDao.delete(id);
+            certificateDao.delete(id);
         } else {
             throw new ElementSearchException("There is not element with id " + id);
         }
@@ -82,23 +88,32 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     @Transactional
     @Override
     public GiftCertificate update(long id, GiftCertificate certificate) {
-        Optional<GiftCertificate> giftCertificateOptional = certificateDao.findById(id);
-        if(giftCertificateOptional.isPresent()) {
-            GiftCertificate oldCertificate = giftCertificateOptional.get();
-            updateCertificateFields(oldCertificate, certificate);
-            oldCertificate.setLastUpdateDate(LocalDateTime.parse(LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)));
-            List<Tag> oldTags = tagService.findTagsFromCertificate(id);
-            List<Tag> newTags = tagService.findAll().stream()
-                    .filter(t -> !oldTags.contains(t) && oldCertificate.getTags().contains(t))
-                    .collect(Collectors.toList());
-            certificateDao.updateCertificateTags(id, newTags);
-            if(certificateDao.update(id, oldCertificate)) {
+        if(id == certificate.getId()) {
+            Optional<GiftCertificate> giftCertificateOptional = certificateDao.findById(id);
+            if(giftCertificateOptional.isPresent()) {
+                List<FieldCondition> conditionList = CertificateConditionStrategy.createConditionsList(certificate);
+                try {
+                    certificateDao.update(id, conditionList);
+                } catch (DaoException e) {
+                    throw new ElementSearchException(e.getLocalizedMessage());
+                }
+                if(GiftCertificateValidator.areTagsValid(certificate.getTags())) {
+                    certificateDao.removeTagsFromCertificate(id);
+                    HashSet<Tag> tagsWithoutDuplicates = new HashSet<>(certificate.getTags());
+                    List<Tag> existingTags = tagService.findAllExisting(certificate.getTags());
+                    List<Tag> newTags = tagsWithoutDuplicates.stream().filter(t -> !existingTags
+                            .contains(t)).collect(Collectors.toList());
+                    if(newTags.size() > 0) {
+                        newTags.forEach(tagService::insert);
+                    }
+                    certificateDao.updateCertificateTags(id, tagService.findAllExisting(certificate.getTags()));
+                }
                 return certificateDao.findById(id).orElseThrow(() -> new ElementSearchException("There is not element with id " + id));
             } else {
                 throw new ElementSearchException("There is not element with id " + id);
             }
         } else {
-            throw new ElementSearchException("There is not element with id " + id);
+            throw new InvalidFieldException("Certificate id mismatch - (" + id + ", " + certificate.getId() + ")");
         }
     }
 
@@ -125,13 +140,6 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
             return certificateDao.findAll();
         } else {
             return certificateDao.findAllByCriteria(criteriaList);
-        }
-    }
-
-
-    private void updateCertificateFields(GiftCertificate oldCertificate, GiftCertificate newCertificate) {
-        for(CertificateConditionStrategy strategy : CertificateConditionStrategy.values()) {
-            strategy.changeCondition(oldCertificate, newCertificate);
         }
     }
 }
