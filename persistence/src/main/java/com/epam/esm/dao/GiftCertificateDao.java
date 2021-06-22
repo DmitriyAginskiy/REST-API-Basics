@@ -20,6 +20,7 @@ public interface GiftCertificateDao {
      * Adds gift certificate to the table.
      *
      * @param certificate object to be added.
+     * @return long value with created object id.
      * @throws DaoException if object is not inserted
      */
     long insert(GiftCertificate certificate) throws DaoException;
@@ -28,7 +29,7 @@ public interface GiftCertificateDao {
      * Deletes gift certificate from the table.
      *
      * @param id of the object to be deleted.
-     * @return true if the object was deleted, otherwise - false.
+     *
      */
     void delete(long id);
 
@@ -44,8 +45,8 @@ public interface GiftCertificateDao {
      * Updates the certificate.
      *
      * @param id of the object to be updated.
-     * @param certificate new object.
-     * @return returns true if the object was updated, otherwise - false.
+     * @param conditionList with fields to be updated.
+     * @throws DaoException if resources does not exist
      */
     void update(long id, List<FieldCondition> conditionList) throws DaoException;
 
