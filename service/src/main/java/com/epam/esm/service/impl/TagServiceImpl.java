@@ -68,11 +68,6 @@ public class TagServiceImpl implements TagService {
     }
 
     @Override
-    public List<Tag> findTagsFromCertificate(long id) {
-        return tagDao.findTagsFromCertificate(id);
-    }
-
-    @Override
     public List<Tag> findAll() {
         return tagDao.findAll();
     }

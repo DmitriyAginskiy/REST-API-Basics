@@ -31,14 +31,6 @@ public interface TagDao {
     void delete(long id);
 
     /**
-     * Finds tags by certificate id.
-     *
-     * @param id of the connected certificate.
-     * @return list of found tags.
-     */
-    List<Tag> findTagsFromCertificate(long id);
-
-    /**
      * Finds the tag by id.
      *
      * @param id of the object to be found.

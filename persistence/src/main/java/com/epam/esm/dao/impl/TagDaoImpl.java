@@ -55,11 +55,6 @@ public class TagDaoImpl implements TagDao {
     }
 
     @Override
-    public List<Tag> findTagsFromCertificate(long id) {
-        return jdbcTemplate.query(TagQuery.FIND_TAGS_BY_CERTIFICATE, mapper, id);
-    }
-
-    @Override
     public Optional<Tag> findById(long id) {
         return jdbcTemplate.query(TagQuery.FIND_BY_ID_QUERY, mapper, id).stream().findFirst();
     }
