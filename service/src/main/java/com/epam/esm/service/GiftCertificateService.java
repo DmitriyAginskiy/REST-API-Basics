@@ -14,7 +14,7 @@ public interface GiftCertificateService {
      * Adds new gift certificate.
      *
      * @param certificate an object to be added.
-     *
+     * @return added GiftCertificate object
      */
     GiftCertificate insert(GiftCertificate certificate);
 
@@ -22,7 +22,7 @@ public interface GiftCertificateService {
      * Deletes gift certificate.
      *
      * @param id of the object to be deleted.
-     * @return true if the object was deleted, otherwise - false.
+     *
      */
    void delete(long id);
 
@@ -30,7 +30,7 @@ public interface GiftCertificateService {
      * Updates gift certificate.
      *
      * @param id of the object to be updated.
-     * @param certificate new object.
+     * @param certificate with new fields.
      * @return updated object.
      */
     GiftCertificate update(long id, GiftCertificate certificate);
