@@ -1,7 +1,7 @@
 package com.epam.esm.exception;
 
 /**
- * Custom ElementNotFound exception.
+ * Custom ElementSearch exception.
  *
  * @author Dzmitry Ahinski
  */
