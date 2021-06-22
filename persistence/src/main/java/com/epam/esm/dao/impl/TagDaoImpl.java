@@ -50,8 +50,8 @@ public class TagDaoImpl implements TagDao {
     }
 
     @Override
-    public boolean delete(long id) {
-        return jdbcTemplate.update(TagQuery.DELETE_TAG_QUERY, id) == 1;
+    public void delete(long id) {
+        jdbcTemplate.update(TagQuery.DELETE_TAG_QUERY, id);
     }
 
     @Override
