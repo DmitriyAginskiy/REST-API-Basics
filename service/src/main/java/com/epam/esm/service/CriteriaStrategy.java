@@ -10,6 +10,11 @@ import com.epam.esm.validator.TagValidator;
 
 import java.util.Optional;
 
+/**
+ * Enum contains methods for creating criteria.
+ *
+ * @author Dzmitry Ahinski
+ */
 public enum CriteriaStrategy {
 
     CERTIFICATE_NAME {
@@ -62,5 +67,11 @@ public enum CriteriaStrategy {
         }
     };
 
+    /**
+     * Creates criteria object from String.
+     *
+     * @param criteria as String, which contains search criteria
+     * @return Optional object with created criteria
+     */
     public abstract Optional<Criteria> createCriteria(String criteria);
 }
