@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 /**
- * Class that creates gift certificate search query with criteria.
+ * Class that creates gift certificate update or search query with criteria.
  *
  * @author Dzmitry Ahinski
  */

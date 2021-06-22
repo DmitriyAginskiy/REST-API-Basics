@@ -1,10 +1,12 @@
 package com.epam.esm.dao.creator;
 
 import com.epam.esm.dao.constant.TagColumnName;
-import com.epam.esm.entity.Tag;
 
-import java.util.List;
-
+/**
+ * Class that creates tag queries.
+ *
+ * @author Dzmitry Ahinski
+ */
 public class TagQueryCreator {
 
     private static final String SELECTION_QUERY_WITHOUT_TAGS = "SELECT * FROM tags WHERE ";
@@ -14,7 +16,12 @@ public class TagQueryCreator {
     private static final String SEMICOLON = ";";
     private static final String OR = "OR";
 
-
+    /**
+     * Creates search query for existing tags.
+     *
+     * @param tagsNumber as the number of tags
+     * @return String as final search query
+     */
     public static String createExistingTagsSelectionQuery(int tagsNumber) {
         StringBuilder finalQuery = new StringBuilder(SELECTION_QUERY_WITHOUT_TAGS);
         boolean isFirstTag = true;
