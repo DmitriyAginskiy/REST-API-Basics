@@ -18,6 +18,8 @@ public final class TagQuery {
 
     public static final String FIND_BY_ID_QUERY = "SELECT * FROM tags WHERE tag_id = ?;";
 
+    public static final String DISCONNECT_TAG_FROM_CERTIFICATES = "DELETE FROM gift_certificates_has_tags WHERE tags_id_fk = ?;";
+
     public static final String DELETE_TAG_QUERY = "DELETE FROM tags WHERE tag_id = ?;";
 
     private TagQuery() {

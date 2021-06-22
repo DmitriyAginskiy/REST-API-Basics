@@ -44,6 +44,12 @@ public class GiftCertificateQueryCreator {
         return finalQuery.toString();
     }
 
+    /**
+     * Creates gift certificate update query.
+     *
+     * @param conditionList as list, which includes field conditions object.
+     * @return String as final search query
+     */
     public static String createUpdateQuery(List<FieldCondition> conditionList) {
         StringBuilder finalQuery = new StringBuilder(UPDATE_QUERY_WITHOUT_FIELDS);
         boolean isFirstField = true;
@@ -68,6 +74,12 @@ public class GiftCertificateQueryCreator {
         return finalQuery.toString();
     }
 
+    /**
+     * Adds search criteria to the final query/
+     *
+     * @param criteriaList as list of criteria
+     * @param finalQuery as final search query
+     */
     private static void addSearchCriteria(List<Criteria> criteriaList, StringBuilder finalQuery) {
         List<Criteria> searchCriteriaList = criteriaList.stream().filter(t -> t instanceof SearchCriteria).collect(Collectors.toList());
         if(!searchCriteriaList.isEmpty()) {
@@ -85,6 +97,12 @@ public class GiftCertificateQueryCreator {
         }
     }
 
+    /**
+     * Adds sort criteria to the final query.
+     *
+     * @param criteriaList as list of criteria
+     * @param finalQuery as final search query
+     */
     private static void addSortCriteria(List<Criteria> criteriaList, StringBuilder finalQuery) {
         List<Criteria> sortCriteriaList = criteriaList.stream().filter(t -> t instanceof SortCriteria).collect(Collectors.toList());
         if(!sortCriteriaList.isEmpty()) {

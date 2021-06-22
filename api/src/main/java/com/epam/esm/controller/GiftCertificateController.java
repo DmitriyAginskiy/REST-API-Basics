@@ -2,7 +2,6 @@ package com.epam.esm.controller;
 
 import com.epam.esm.entity.GiftCertificate;
 import com.epam.esm.service.GiftCertificateService;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -11,7 +10,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -45,7 +43,7 @@ public class GiftCertificateController {
      * Create a new gift certificate;
      *
      * @param certificate an object to be created
-     * @return ResponseEntity object with some information about creating and response status.
+     * @return created gift certificate object
      */
     @PostMapping(produces = "application/json; charset=utf-8")
     public GiftCertificate createGiftCertificate(@RequestBody GiftCertificate certificate) {
@@ -74,7 +72,7 @@ public class GiftCertificateController {
     /**
      * Finds gift certificate by id
      *
-     * @param id the id of certificate to be found.
+     * @param id of certificate to be found.
      * @return found gift certificate object.
      */
     @GetMapping(value = "/{id}", produces = "application/json; charset=utf-8")
@@ -85,8 +83,8 @@ public class GiftCertificateController {
     /**
      * Deletes gift certificate.
      *
-     * @param id the id of certificate to be deleted.
-     * @return Response entity with removal information.
+     * @param id of certificate to be deleted.
+     * @return Response entity with NO CONTENT status
      */
     @DeleteMapping(value = "/{id}", produces = "application/json; charset=utf-8")
     public ResponseEntity<String> deleteGiftCertificate(@PathVariable long id) {
@@ -98,12 +96,11 @@ public class GiftCertificateController {
      * Updates gift certificate.
      *
      * @param id the id of certificate to be updated.
-     * @param id the id of certificate to be updated.
+     * @param certificate with new fields for update.
      * @return Updated object.
      */
     @PatchMapping(value = "/{id}", produces = "application/json; charset=utf-8")
     public GiftCertificate updateGiftCertificate(@PathVariable long id, @RequestBody GiftCertificate certificate) {
-        System.out.println(certificate);
         return certificateService.update(id, certificate);
     }
 }

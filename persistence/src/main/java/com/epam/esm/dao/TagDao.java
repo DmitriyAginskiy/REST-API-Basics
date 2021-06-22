@@ -61,4 +61,6 @@ public interface TagDao {
     List<Tag> findAll();
 
     List<Tag> findAllExisting(List<Tag> tags);
+
+    void disconnectTagFromCertificates(long id);
 }

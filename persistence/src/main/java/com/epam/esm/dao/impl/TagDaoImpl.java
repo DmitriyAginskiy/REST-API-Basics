@@ -85,4 +85,9 @@ public class TagDaoImpl implements TagDao {
             return statement;
         }, mapper);
     }
+
+    @Override
+    public void disconnectTagFromCertificates(long id) {
+        jdbcTemplate.update(TagQuery.DISCONNECT_TAG_FROM_CERTIFICATES, id);
+    }
 }

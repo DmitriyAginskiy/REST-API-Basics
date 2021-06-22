@@ -1,5 +1,11 @@
 package com.epam.esm.dao.creator;
 
+
+/**
+ * Gift certificate field condition class/
+ *
+ * @author Dzmitry Ahinski
+ */
 public class FieldCondition {
 
     private static final String EQUAL_SYMBOL = "=";
@@ -14,6 +20,11 @@ public class FieldCondition {
         this.value = value;
     }
 
+    /**
+     * Adds current field to the query.
+     *
+     * @param finalQuery current query
+     */
     public void addToQuery(StringBuilder finalQuery) {
         finalQuery.append(name);
         finalQuery.append(WHITESPACE);

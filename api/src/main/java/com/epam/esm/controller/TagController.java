@@ -40,7 +40,7 @@ public class TagController {
      * Create a new tag.
      *
      * @param tag an object to be created
-     * @return ResponseEntity object with some information about creating and response status.
+     * @return created Tag object.
      */
     @PostMapping(produces = "application/json; charset=utf-8")
     public Tag createTag(@RequestBody Tag tag) {
@@ -71,7 +71,7 @@ public class TagController {
     /**
      * Deletes tag by id
      *
-     * @return list with found tags.
+     * @return Response entity with NO CONTENT status
      */
     @DeleteMapping(value = "/{id}", produces = "application/json; charset=utf-8")
     public ResponseEntity<String> deleteTag(@PathVariable long id) {

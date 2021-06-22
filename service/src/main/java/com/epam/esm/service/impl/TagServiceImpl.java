@@ -9,6 +9,7 @@ import com.epam.esm.service.TagService;
 import com.epam.esm.validator.TagValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -28,6 +29,7 @@ public class TagServiceImpl implements TagService {
         this.tagDao = tagDao;
     }
 
+    @Transactional
     @Override
     public Tag insert(Tag tag) {
         Optional<Tag> tagOptional = tagDao.findByName(tag.getName());
@@ -43,10 +45,12 @@ public class TagServiceImpl implements TagService {
         }
     }
 
+    @Transactional
     @Override
     public void delete(long id) {
         Optional<Tag> tagOptional = tagDao.findById(id);
         if(tagOptional.isPresent()) {
+            tagDao.disconnectTagFromCertificates(id);
             tagDao.delete(id);
         } else {
             throw new ElementSearchException("There is not element with id " + id);

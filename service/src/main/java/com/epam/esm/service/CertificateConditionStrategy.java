@@ -5,7 +5,6 @@ import com.epam.esm.dao.creator.FieldCondition;
 import com.epam.esm.entity.GiftCertificate;
 import com.epam.esm.validator.GiftCertificateValidator;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
