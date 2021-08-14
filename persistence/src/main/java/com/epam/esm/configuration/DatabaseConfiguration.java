@@ -7,6 +7,7 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabase;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import javax.sql.DataSource;
 import java.io.IOException;
@@ -18,6 +19,7 @@ import java.util.Properties;
  * @author Dzmitry Ahinski
  */
 @Configuration
+@EnableTransactionManagement
 public class DatabaseConfiguration {
     private static final String PROPERTIES_PATH = "/database.properties";
     private static final String DRIVER_CLASSNAME = "db.driver";

@@ -14,6 +14,7 @@ import com.epam.esm.service.GiftCertificateService;
 import com.epam.esm.service.TagService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -23,6 +24,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import com.epam.esm.validator.GiftCertificateValidator;
+import org.springframework.transaction.support.TransactionSynchronizationManager;
 
 /**
  * GiftCertificateService implementation.
@@ -73,6 +75,7 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     @Transactional
     @Override
     public void delete(long id) {
+        System.out.println("delete: " + TransactionSynchronizationManager.isActualTransactionActive());
         Optional<GiftCertificate> giftCertificateOptional = certificateDao.findById(id);
         if(giftCertificateOptional.isPresent()) {
             GiftCertificate giftCertificate = giftCertificateOptional.get();
@@ -83,11 +86,13 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
         } else {
             throw new ElementSearchException("There is not element with id " + id);
         }
+        System.out.println("delete: " + TransactionSynchronizationManager.isActualTransactionActive());
     }
 
     @Transactional
     @Override
     public GiftCertificate update(long id, GiftCertificate certificate) {
+        System.out.println("update: " + TransactionSynchronizationManager.isActualTransactionActive());
         if(id == certificate.getId()) {
             Optional<GiftCertificate> giftCertificateOptional = certificateDao.findById(id);
             if(giftCertificateOptional.isPresent()) {
