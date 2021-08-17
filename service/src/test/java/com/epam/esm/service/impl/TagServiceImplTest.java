@@ -32,22 +32,6 @@ class TagServiceImplTest {
     }
 
     @Test
-    void insert() {
-        Mockito.when(dao.findByName("SomeTag")).thenReturn(Optional.empty());
-        Mockito.when(dao.insert(tag)).thenReturn(true);
-        boolean actual = service.insert(tag);
-        assertTrue(actual);
-    }
-
-    @Test
-    void delete() {
-        Mockito.when(dao.findById(1)).thenReturn(Optional.of(tag));
-        Mockito.when(dao.delete(1)).thenReturn(true);
-        boolean actual = service.delete(1);
-        assertTrue(actual);
-    }
-
-    @Test
     void findById() {
         Mockito.when(dao.findById(1)).thenReturn(Optional.of(tag));
         Optional<Tag> actual = dao.findById(1);

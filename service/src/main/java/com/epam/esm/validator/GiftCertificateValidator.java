@@ -13,7 +13,7 @@ import java.util.regex.Pattern;
  * @author Dzmitry Ahinski
  */
 public class GiftCertificateValidator {
-    private static final Pattern NAME_PATTERN = Pattern.compile("[a-zA-Z\\w\\s]{1,128}");
+    private static final Pattern NAME_PATTERN = Pattern.compile("[a-zA-Z0-9\\w\\s]{1,128}");
 
     public static boolean areValidFields(GiftCertificate certificate) {
         return isNameValid(certificate.getName()) && isDescriptionValid(certificate.getDescription())
@@ -37,6 +37,6 @@ public class GiftCertificateValidator {
     }
 
     public static boolean areTagsValid(List<Tag> tags) {
-        return tags.stream().allMatch(t -> TagValidator.isNameValid(t.getName()));
+        return tags != null && tags.stream().allMatch(t -> TagValidator.isNameValid(t.getName()));
     }
 }

@@ -14,26 +14,26 @@ public interface GiftCertificateService {
      * Adds new gift certificate.
      *
      * @param certificate an object to be added.
-     * @return true if the object was added, otherwise - false.
+     * @return added GiftCertificate object
      */
-    boolean insert(GiftCertificate certificate);
+    GiftCertificate insert(GiftCertificate certificate);
 
     /**
      * Deletes gift certificate.
      *
      * @param id of the object to be deleted.
-     * @return true if the object was deleted, otherwise - false.
+     *
      */
-    boolean delete(long id);
+   void delete(long id);
 
     /**
      * Updates gift certificate.
      *
      * @param id of the object to be updated.
-     * @param certificate new object.
-     * @return true if the object was updated, otherwise - false.
+     * @param certificate with new fields.
+     * @return updated object.
      */
-    boolean update(long id, GiftCertificate certificate);
+    GiftCertificate update(long id, GiftCertificate certificate);
 
     /**
      * Finds gift certificate by id.
@@ -53,13 +53,6 @@ public interface GiftCertificateService {
      * @param sortByName criteria.
      * @return list of the found gift certificates.
      */
-    List<GiftCertificate> findAllByCriteria(String certificateName, String tagName, String description,
+    List<GiftCertificate> findAll(String certificateName, String tagName, String description,
                                             String sortByDate, String sortByName);
-
-    /**
-     * Finds all gift certificates.
-     *
-     * @return list of the found gift certificates.
-     */
-    List<GiftCertificate> findAll();
 }

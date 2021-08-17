@@ -1,8 +1,10 @@
 package com.epam.esm.dao;
 
+import com.epam.esm.dao.creator.FieldCondition;
 import com.epam.esm.dao.creator.criteria.Criteria;
 import com.epam.esm.entity.GiftCertificate;
 import com.epam.esm.entity.Tag;
+import com.epam.esm.exception.DaoException;
 
 import java.util.List;
 import java.util.Optional;
@@ -18,23 +20,24 @@ public interface GiftCertificateDao {
      * Adds gift certificate to the table.
      *
      * @param certificate object to be added.
-     * @return returns true if the object was added, otherwise - false.
+     * @return long value with created object id.
+     * @throws DaoException if object is not inserted
      */
-    boolean insert(GiftCertificate certificate);
+    long insert(GiftCertificate certificate) throws DaoException;
 
     /**
      * Deletes gift certificate from the table.
      *
      * @param id of the object to be deleted.
-     * @return returns true if the object was deleted, otherwise - false.
+     *
      */
-    boolean delete(long id);
+    void delete(long id);
 
     /**
      * Removes all tags from the certificate.
      *
      * @param id of the object to be updated.
-     * @return returns true if the tags were removed, otherwise - false.
+     * @return true if the tags were removed, otherwise - false.
      */
     boolean removeTagsFromCertificate(long id);
 
@@ -42,10 +45,10 @@ public interface GiftCertificateDao {
      * Updates the certificate.
      *
      * @param id of the object to be updated.
-     * @param certificate new object.
-     * @return returns true if the object was updated, otherwise - false.
+     * @param conditionList with fields to be updated.
+     * @throws DaoException if resources does not exist
      */
-    boolean update(long id, GiftCertificate certificate);
+    void update(long id, List<FieldCondition> conditionList) throws DaoException;
 
     /**
      * Finds the certificate by id.

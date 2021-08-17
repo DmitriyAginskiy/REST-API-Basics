@@ -4,9 +4,11 @@ import com.zaxxer.hikari.HikariDataSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
+import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabase;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import javax.sql.DataSource;
 import java.io.IOException;
@@ -18,6 +20,7 @@ import java.util.Properties;
  * @author Dzmitry Ahinski
  */
 @Configuration
+@EnableTransactionManagement
 public class DatabaseConfiguration {
     private static final String PROPERTIES_PATH = "/database.properties";
     private static final String DRIVER_CLASSNAME = "db.driver";
@@ -52,11 +55,16 @@ public class DatabaseConfiguration {
      *
      * @return data source object
      */
-    @Profile("dev")
+    @Profile("test")
     @Bean
     public DataSource embeddedDataSource() {
         EmbeddedDatabaseBuilder builder = new EmbeddedDatabaseBuilder();
         EmbeddedDatabase db = builder.setType(EmbeddedDatabaseType.H2).addScript(CREATE_DATABASE).addScript(INSERT_DATA).build();
         return db;
+    }
+
+    @Bean
+    public DataSourceTransactionManager txManager() throws IOException {
+        return new DataSourceTransactionManager(dataSource());
     }
 }

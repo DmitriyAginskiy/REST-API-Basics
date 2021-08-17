@@ -9,6 +9,8 @@ import org.junit.jupiter.api.TestInstance;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionSynchronizationManager;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -36,26 +38,12 @@ public class GiftCertificateServiceImplTest {
 
     @Test
     public void findAll() {
+        System.out.println(TransactionSynchronizationManager.isActualTransactionActive());
         List<GiftCertificate> expected = new ArrayList<>();
         expected.add(giftCertificate);
         Mockito.when(dao.findAll()).thenReturn(expected);
-        List<GiftCertificate> actual = service.findAll();
+        List<GiftCertificate> actual = service.findAll("someName", "sometag", "somedesc", "ASC", "DESC");
         assertEquals(expected, actual);
-    }
-
-    @Test
-    void insert() {
-        Mockito.when(dao.insert(giftCertificate)).thenReturn(true);
-        boolean actual = service.insert(giftCertificate);
-        assertTrue(actual);
-    }
-
-    @Test
-    void delete() {
-        Mockito.when(dao.findById(Mockito.anyLong())).thenReturn(Optional.of(giftCertificate));
-        Mockito.when(dao.delete(Mockito.anyLong())).thenReturn(true);
-        boolean actual = service.delete(1);
-        assertTrue(actual);
     }
 
     @Test

@@ -1,17 +1,19 @@
 package com.epam.esm.service.impl;
 
 import com.epam.esm.dao.GiftCertificateDao;
-import com.epam.esm.dao.constant.GiftCertificateColumnName;
-import com.epam.esm.dao.constant.TagColumnName;
+import com.epam.esm.dao.creator.FieldCondition;
 import com.epam.esm.dao.creator.criteria.Criteria;
-import com.epam.esm.dao.creator.criteria.impl.SearchCriteria;
-import com.epam.esm.dao.creator.criteria.impl.SortCriteria;
 import com.epam.esm.entity.GiftCertificate;
 import com.epam.esm.entity.Tag;
-import com.epam.esm.exception.ElementNotFoundException;
+import com.epam.esm.exception.DaoException;
+import com.epam.esm.exception.ElementSearchException;
+import com.epam.esm.exception.InvalidFieldException;
+import com.epam.esm.service.CertificateConditionStrategy;
+import com.epam.esm.service.CriteriaStrategy;
 import com.epam.esm.service.GiftCertificateService;
 import com.epam.esm.service.TagService;
-import com.epam.esm.validator.TagValidator;
+import com.epam.esm.util.ExceptionMessageManager;
+import com.epam.esm.util.constant.MessageKey;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,9 +22,11 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import com.epam.esm.validator.GiftCertificateValidator;
+import org.springframework.transaction.support.TransactionSynchronizationManager;
 
 /**
  * GiftCertificateService implementation.
@@ -43,56 +47,81 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
 
     @Transactional
     @Override
-    public boolean insert(GiftCertificate certificate) {
+    public GiftCertificate insert(GiftCertificate certificate) {
         if(certificate != null && GiftCertificateValidator.areValidFields(certificate)) {
             LocalDateTime dateTime = LocalDateTime.parse(LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
             certificate.setCreateDate(dateTime);
             certificate.setLastUpdateDate(dateTime);
             if(certificate.getTags() != null) {
                 HashSet<Tag> tagsWithoutDuplicates = new HashSet<>(certificate.getTags());
-                List<Tag> newTags = tagsWithoutDuplicates.stream().filter(t -> !tagService.findAll().contains(t)).collect(Collectors.toList());
+                List<Tag> existingTags = tagService.findAllExisting(certificate.getTags());
+                List<Tag> newTags = tagsWithoutDuplicates.stream().filter(t -> !existingTags
+                        .contains(t)).collect(Collectors.toList());
                 if(newTags.size() > 0) {
                     newTags.forEach(tagService::insert);
                 }
-                List<Tag> updatedTags = new ArrayList<>();
-                tagsWithoutDuplicates.forEach(t -> updatedTags.add(tagService.findByName(t.getName())));
-                certificate.setTags(updatedTags);
+                certificate.setTags(tagService.findAllExisting(certificate.getTags()));
             }
+            try {
+                long id = certificateDao.insert(certificate);
+                Optional<GiftCertificate> certificateOptional = certificateDao.findById(id);
+                return certificateOptional.orElseThrow(() -> new ElementSearchException(
+                        ExceptionMessageManager.getMessage(MessageKey.ELEMENT_SEARCH_KEY, Locale.getDefault(), id)));
+            } catch (DaoException e) {
+                throw new ElementSearchException(ExceptionMessageManager.getMessage(MessageKey.ELEMENT_SEARCH_KEY, Locale.getDefault(), certificate.getId()));
+            }
+        } else {
+            throw new InvalidFieldException(ExceptionMessageManager.getMessage(MessageKey.INVALID_FIELD_KEY, Locale.getDefault(), certificate.getId()));
         }
-        return certificateDao.insert(certificate);
     }
 
     @Transactional
     @Override
-    public boolean delete(long id) {
+    public void delete(long id) {
         Optional<GiftCertificate> giftCertificateOptional = certificateDao.findById(id);
         if(giftCertificateOptional.isPresent()) {
             GiftCertificate giftCertificate = giftCertificateOptional.get();
             if(giftCertificate.getTags() != null && !giftCertificate.getTags().isEmpty()) {
                 certificateDao.removeTagsFromCertificate(id);
             }
-            return certificateDao.delete(id);
+            certificateDao.delete(id);
         } else {
-            throw new ElementNotFoundException("There is not element with id " + id);
+            throw new ElementSearchException(ExceptionMessageManager.getMessage(MessageKey.ELEMENT_SEARCH_KEY, Locale.getDefault(), id));
         }
     }
 
     @Transactional
     @Override
-    public boolean update(long id, GiftCertificate certificate) {
-        Optional<GiftCertificate> giftCertificateOptional = certificateDao.findById(id);
-        if(giftCertificateOptional.isPresent()) {
-            GiftCertificate oldCertificate = giftCertificateOptional.get();
-            updateCertificateFields(oldCertificate, certificate);
-            oldCertificate.setLastUpdateDate(LocalDateTime.parse(LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)));
-            List<Tag> oldTags = tagService.findTagsFromCertificate(id);
-            List<Tag> newTags = tagService.findAll().stream()
-                    .filter(t -> !oldTags.contains(t) && oldCertificate.getTags().contains(t))
-                    .collect(Collectors.toList());
-            certificateDao.updateCertificateTags(id, newTags);
-            return certificateDao.update(id, oldCertificate);
+    public GiftCertificate update(long id, GiftCertificate certificate) {
+        System.out.println("update: " + TransactionSynchronizationManager.isActualTransactionActive());
+        if(id == certificate.getId()) {
+            Optional<GiftCertificate> giftCertificateOptional = certificateDao.findById(id);
+            if(giftCertificateOptional.isPresent()) {
+                List<FieldCondition> conditionList = CertificateConditionStrategy.createConditionsList(certificate);
+                try {
+                    certificateDao.update(id, conditionList);
+                } catch (DaoException e) {
+                    throw new ElementSearchException(ExceptionMessageManager.getMessage(MessageKey.ELEMENT_SEARCH_KEY, Locale.getDefault(), id));
+                }
+                if(GiftCertificateValidator.areTagsValid(certificate.getTags())) {
+                    certificateDao.removeTagsFromCertificate(id);
+                    HashSet<Tag> tagsWithoutDuplicates = new HashSet<>(certificate.getTags());
+                    List<Tag> existingTags = tagService.findAllExisting(certificate.getTags());
+                    List<Tag> newTags = tagsWithoutDuplicates.stream().filter(t -> !existingTags
+                            .contains(t)).collect(Collectors.toList());
+                    if(newTags.size() > 0) {
+                        newTags.forEach(tagService::insert);
+                    }
+                    certificateDao.updateCertificateTags(id, tagService.findAllExisting(certificate.getTags()));
+                }
+                return certificateDao.findById(id).orElseThrow(() -> new ElementSearchException(
+                        ExceptionMessageManager.getMessage(MessageKey.ELEMENT_SEARCH_KEY, Locale.getDefault(), id)));
+            } else {
+                throw new ElementSearchException(ExceptionMessageManager.getMessage(
+                        MessageKey.ELEMENT_SEARCH_KEY, Locale.getDefault(), id));
+            }
         } else {
-            throw new ElementNotFoundException("There is not element with id " + id);
+            throw new InvalidFieldException("Certificate id mismatch - (" + id + ", " + certificate.getId() + ")");
         }
     }
 
@@ -102,53 +131,23 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
         if(certificate.isPresent()) {
             return certificate.get();
         } else {
-            throw new ElementNotFoundException("Element with id " + id + " is not founded!");
+            throw new ElementSearchException("Element with id " + id + " is not founded!");
         }
     }
 
     @Override
-    public List<GiftCertificate> findAllByCriteria(String certificateName, String tagName, String description, String sortByDate, String sortByName) {
+    public List<GiftCertificate> findAll(String certificateName, String tagName, String description, String sortByDate, String sortByName) {
         List<Criteria> criteriaList = new ArrayList<>();
-        if(GiftCertificateValidator.isNameValid(certificateName)) {
-            criteriaList.add(new SearchCriteria(GiftCertificateColumnName.NAME, certificateName));
+        String[] criteriaArray = new String[] { certificateName, tagName, description, sortByDate, sortByName };
+        int counter = 0;
+        for(CriteriaStrategy criteriaStrategy : CriteriaStrategy.values()) {
+            Optional<Criteria> criteriaOptional = criteriaStrategy.createCriteria(criteriaArray[counter++]);
+            criteriaOptional.ifPresent(criteriaList::add);
         }
-        if(TagValidator.isNameValid(tagName)) {
-            criteriaList.add(new SearchCriteria(TagColumnName.TAG_NAME, tagName));
-        }
-        if(GiftCertificateValidator.isDescriptionValid(description)) {
-            criteriaList.add(new SearchCriteria(GiftCertificateColumnName.DESCRIPTION, description));
-        }
-        if(sortByDate != null && (sortByDate.equalsIgnoreCase(SortCriteria.SORT_ASC) || sortByDate.equalsIgnoreCase(SortCriteria.SORT_DESC))) {
-            String sortType = sortByDate.equalsIgnoreCase(SortCriteria.SORT_ASC) ? SortCriteria.SORT_ASC : SortCriteria.SORT_DESC;
-            criteriaList.add(new SortCriteria(GiftCertificateColumnName.CREATE_DATE, sortType));
-        }
-        if(sortByName != null && (sortByName.equalsIgnoreCase(SortCriteria.SORT_ASC) || sortByName.equalsIgnoreCase(SortCriteria.SORT_DESC))) {
-            String sortType = sortByName.equalsIgnoreCase(SortCriteria.SORT_ASC) ? SortCriteria.SORT_ASC : SortCriteria.SORT_DESC;
-            criteriaList.add(new SortCriteria(GiftCertificateColumnName.NAME, sortType));
-        }
-        return certificateDao.findAllByCriteria(criteriaList);
-    }
-
-    @Override
-    public List<GiftCertificate> findAll() {
-        return certificateDao.findAll();
-    }
-
-    private void updateCertificateFields(GiftCertificate oldCertificate, GiftCertificate newCertificate) {
-        if(GiftCertificateValidator.isNameValid(newCertificate.getName())) {
-            oldCertificate.setName(newCertificate.getName());
-        }
-        if(GiftCertificateValidator.isDescriptionValid(newCertificate.getDescription())) {
-            oldCertificate.setDescription(newCertificate.getDescription());
-        }
-        if(GiftCertificateValidator.isPriceValid(newCertificate.getPrice())) {
-            oldCertificate.setPrice(newCertificate.getPrice());
-        }
-        if(GiftCertificateValidator.isDurationValid(newCertificate.getDuration())) {
-            oldCertificate.setDuration(newCertificate.getDuration());
-        }
-        if(GiftCertificateValidator.areTagsValid(newCertificate.getTags())) {
-            oldCertificate.setTags(newCertificate.getTags());
+        if(criteriaList.isEmpty()) {
+            return certificateDao.findAll();
+        } else {
+            return certificateDao.findAllByCriteria(criteriaList);
         }
     }
 }

@@ -1,11 +1,18 @@
 package com.epam.esm.controller;
 
+
 import com.epam.esm.entity.Tag;
 import com.epam.esm.service.TagService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
@@ -34,12 +41,11 @@ public class TagController {
      * Create a new tag.
      *
      * @param tag an object to be created
-     * @return ResponseEntity object with some information about creating and response status.
+     * @return created Tag object.
      */
-    @PostMapping("/new")
-    public ResponseEntity<String> createTag(@RequestBody Tag tag) {
-        tagService.insert(tag);
-        return ResponseEntity.status(HttpStatus.CREATED).body("Tag created successfully!");
+    @PostMapping(produces = "application/json; charset=utf-8")
+    public Tag createTag(@RequestBody Tag tag) {
+        return tagService.insert(tag);
     }
 
     /**
@@ -48,7 +54,7 @@ public class TagController {
      * @param id the id of tag to be found.
      * @return found tag object.
      */
-    @GetMapping("/{id}")
+    @GetMapping(value = "/{id}", produces = "application/json; charset=utf-8")
     public Tag findTagById(@PathVariable long id) {
         return tagService.findById(id);
     }
@@ -58,14 +64,19 @@ public class TagController {
      *
      * @return list with found tags.
      */
-    @GetMapping("/all")
+    @GetMapping(produces = "application/json; charset=utf-8")
     public List<Tag> findAll() {
         return tagService.findAll();
     }
 
-    @DeleteMapping("/{id}")
+    /**
+     * Deletes tag by id
+     *
+     * @return Response entity with NO CONTENT status
+     */
+    @DeleteMapping(value = "/{id}", produces = "application/json; charset=utf-8")
     public ResponseEntity<String> deleteTag(@PathVariable long id) {
         tagService.delete(id);
-        return ResponseEntity.status(HttpStatus.NO_CONTENT).body("Tag deleted successfully!");
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).body("");
     }
 }
