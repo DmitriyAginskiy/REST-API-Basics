@@ -5,7 +5,6 @@ import com.epam.esm.dao.constant.GiftCertificateColumnName;
 import com.epam.esm.dao.constant.GiftCertificateQuery;
 import com.epam.esm.dao.creator.FieldCondition;
 import com.epam.esm.dao.creator.GiftCertificateQueryCreator;
-import com.epam.esm.dao.creator.TagQueryCreator;
 import com.epam.esm.dao.creator.criteria.Criteria;
 import com.epam.esm.dao.mapper.GiftCertificateMapper;
 import com.epam.esm.entity.GiftCertificate;
@@ -62,7 +61,7 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
             }
             return keyHolder.getKey().longValue();
         } else {
-            throw new DaoException("Element " + certificate + "is not added!");
+            throw new DaoException("Element with id " + certificate.getId() + " was not inserted!");
         }
     }
 
@@ -101,7 +100,7 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
             return statement;
         }) == 1;
         if (!isUpdated) {
-            throw new DaoException("Element with id " + id + "is not updated!");
+            throw new DaoException("Element with id " + id + " was not updated!");
         }
     }
 

@@ -12,15 +12,17 @@ import com.epam.esm.service.CertificateConditionStrategy;
 import com.epam.esm.service.CriteriaStrategy;
 import com.epam.esm.service.GiftCertificateService;
 import com.epam.esm.service.TagService;
+import com.epam.esm.util.ExceptionMessageManager;
+import com.epam.esm.util.constant.MessageKey;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import com.epam.esm.validator.GiftCertificateValidator;
@@ -63,19 +65,19 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
             try {
                 long id = certificateDao.insert(certificate);
                 Optional<GiftCertificate> certificateOptional = certificateDao.findById(id);
-                return certificateOptional.orElseThrow(() -> new ElementSearchException("Gift certificate " + certificate + " is not added!"));
+                return certificateOptional.orElseThrow(() -> new ElementSearchException(
+                        ExceptionMessageManager.getMessage(MessageKey.ELEMENT_SEARCH_KEY, Locale.getDefault(), id)));
             } catch (DaoException e) {
-                throw new ElementSearchException(e.getMessage());
+                throw new ElementSearchException(ExceptionMessageManager.getMessage(MessageKey.ELEMENT_SEARCH_KEY, Locale.getDefault(), certificate.getId()));
             }
         } else {
-            throw new InvalidFieldException("Gift certificate " + certificate + " is not valid!");
+            throw new InvalidFieldException(ExceptionMessageManager.getMessage(MessageKey.INVALID_FIELD_KEY, Locale.getDefault(), certificate.getId()));
         }
     }
 
     @Transactional
     @Override
     public void delete(long id) {
-        System.out.println("delete: " + TransactionSynchronizationManager.isActualTransactionActive());
         Optional<GiftCertificate> giftCertificateOptional = certificateDao.findById(id);
         if(giftCertificateOptional.isPresent()) {
             GiftCertificate giftCertificate = giftCertificateOptional.get();
@@ -84,9 +86,8 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
             }
             certificateDao.delete(id);
         } else {
-            throw new ElementSearchException("There is not element with id " + id);
+            throw new ElementSearchException(ExceptionMessageManager.getMessage(MessageKey.ELEMENT_SEARCH_KEY, Locale.getDefault(), id));
         }
-        System.out.println("delete: " + TransactionSynchronizationManager.isActualTransactionActive());
     }
 
     @Transactional
@@ -100,7 +101,7 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
                 try {
                     certificateDao.update(id, conditionList);
                 } catch (DaoException e) {
-                    throw new ElementSearchException(e.getLocalizedMessage());
+                    throw new ElementSearchException(ExceptionMessageManager.getMessage(MessageKey.ELEMENT_SEARCH_KEY, Locale.getDefault(), id));
                 }
                 if(GiftCertificateValidator.areTagsValid(certificate.getTags())) {
                     certificateDao.removeTagsFromCertificate(id);
@@ -113,9 +114,11 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
                     }
                     certificateDao.updateCertificateTags(id, tagService.findAllExisting(certificate.getTags()));
                 }
-                return certificateDao.findById(id).orElseThrow(() -> new ElementSearchException("There is not element with id " + id));
+                return certificateDao.findById(id).orElseThrow(() -> new ElementSearchException(
+                        ExceptionMessageManager.getMessage(MessageKey.ELEMENT_SEARCH_KEY, Locale.getDefault(), id)));
             } else {
-                throw new ElementSearchException("There is not element with id " + id);
+                throw new ElementSearchException(ExceptionMessageManager.getMessage(
+                        MessageKey.ELEMENT_SEARCH_KEY, Locale.getDefault(), id));
             }
         } else {
             throw new InvalidFieldException("Certificate id mismatch - (" + id + ", " + certificate.getId() + ")");
